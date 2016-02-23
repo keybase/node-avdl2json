@@ -1,0 +1,23 @@
+{
+  "name": "advl2json",
+  "version": "1.0.0",
+  "description": "An AVDL-to-JSON compiler",
+  "main": "bin/main.js",
+  "scripts": {
+    "test": "make test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/keybase/node-avdl2json.git"
+  },
+  "keywords": [
+    "AVDL",
+    "JSON"
+  ],
+  "author": "Maxwell Krohn",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/keybase/node-avdl2json/issues"
+  },
+  "homepage": "https://github.com/keybase/node-avdl2json#readme"
+}
