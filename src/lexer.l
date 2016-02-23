@@ -9,10 +9,12 @@
 <INITIAL>"record"   return 'RECORD';
 <INITIAL>"union"    return 'UNION';
 <INITIAL>"enum"     return 'ENUM';
-<INITIAL>"protocol" return 'CONTINUE';
+<INITIAL>"array"    return 'ARRAY';
+<INITIAL>"protocol" return 'PROTOCOL';
 <INITIAL>"fixed"    return 'FIXED';
 <INITIAL>"string"   return 'STRING';
 <INITIAL>"int"      return 'INT';
+<INITIAL>"import"   return 'IMPORT';
 <INITIAL>"long"     return 'LONG';
 <INITIAL>"string"   return 'STRING';
 <INITIAL>"boolean"  return 'BOOLEAN';
@@ -31,6 +33,7 @@
 <INITIAL>"<"        return 'LANGLE';
 <INITIAL>">"        return 'RANGLE';
 <INITIAL>";"        return "SEMICOLON";
+<INITIAL>","        return "COMMA";
 <INITIAL>'='        return 'EQUALS';
 <INITIAL>'@'        return 'AT_SIGN';
 

@@ -3,19 +3,21 @@
 %%
 
 Root
-  : Protocol
+  : Protocol {
+    yy.output = $1; console.log($1);
+    }
   ;
 
 Protocol
-  : ProtocolName LBRACE Statements RBRACE { $$ = new yy.Protocol ({ start : @1, label : $1, statements : $3}); }
+  : ProtocolName LBRACE Statements RBRACE { $$ = new yy.Protocol({ start : @1, label : $1, statements : $3}); }
   ;
 
-ProtocolaName
-  : Decorators PROTOCOL Identifier { $$ = new yy.ProtocolName ({ start: @1, name : $2, decorators : $1 }); }
+ProtocolName
+  : Decorators PROTOCOL Identifier { $$ = new yy.ProtocolName({ start: @1, name : $2, decorators : $1 }); }
   ;
 
 Decorators
-  : Decorator { $$ = [$1]; }
+  : { $$ = []; }
   | Decorators Decorator { $$ = $1.concat($1) }
   ;
 
@@ -46,7 +48,7 @@ Enum
 
 EnumFields
   : Identifier { $$ = [ $1 ]; }
-  | EnumConstants COMMA Identifier { $$ = $1.concat($2) }
+  | EnumFields COMMA Identifier { $$ = $1.concat($2) }
   ;
 
 Record
@@ -63,7 +65,7 @@ Field
   ;
 
 Type
-  : Array
+  : ArrayType
   | Union
   | STRING     { $$ = new yy.Type({start: @1, string: true     }); }
   | INT        { $$ = new yy.Type({start: @1, int: true        }); }
@@ -79,14 +81,14 @@ TypeOrNull
   ;
 
 Value
-  : STRING_TOK { $$ = new yy.Value({start: @1, string: yytext   }); }
+  : String
   | NUMBER     { $$ = new yy.Value({start: @1, int: yytext      }); }
   | TRUE       { $$ = new yy.Value({start: @1, bool: true       }); }
   | FALSE      { $$ = new yy.Value({start: @1, bool: false      }); }
   | NULL       { $$ = new yy.Value({start: @1, null_value: true }); }
   ;
 
-ArrayOfValues
+ArrayValue
   : LBRACKET Values RBRACKET { $$ = $2; }
   ;
 
@@ -95,8 +97,8 @@ Values
   | Values Value { $$ = $1.concat($2); }
   ;
 
-Array
-  : ARRAY LANGLE Type RANGLE { $$ = new yy.Array({ start: @1, type : $3 }); }
+ArrayType
+  : ARRAY LANGLE Type RANGLE { $$ = new yy.ArrayType({ start: @1, type : $3 }); }
   ;
 
 Union
@@ -109,11 +111,16 @@ TypeOrNullList
   ;
 
 Import
-  : IMPORT Identifier STRING_TOK { $$ = new yy.Import({ start: @1, type : $2, path : $3 }); }
+  : IMPORT Identifier String SEMICOLON { $$ = new yy.Import({ start: @1, type : $2, path : $3 }); }
   ;
 
 Message
-  : Decorators Type Identifier LPAREN Params RPAREN SEMICOLON { $$ = new yy.Message({ start: @1, decorators : $1, returns : $2, name : $3, params : $5 }); }
+  : Decorators Type Identifier LPAREN ParamsOpt RPAREN SEMICOLON { $$ = new yy.Message({ start: @1, decorators : $1, return_type : $2, name : $3, params : $5 }); }
+  ;
+
+ParamsOpt
+  : { $$ = [] }
+  | Params
   ;
 
 Params
@@ -132,7 +139,7 @@ ParamDefault
 
 Expr
   : Value
-  | ArrayOfValues { $$ = new yy.ValueArray({start: @1, values : $1 }); }
+  | ArrayValue { $$ = new yy.ArrayValue({start: @1, values : $1 }); }
   ;
 
 Fixed

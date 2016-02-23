@@ -6,6 +6,9 @@
   "scripts": {
     "test": "make test"
   },
+  "bin": {
+    "avdl2json": "./bin/main.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/keybase/node-avdl2json.git"
@@ -21,8 +24,11 @@
   },
   "homepage": "https://github.com/keybase/node-avdl2json#readme",
   "dependencies": {
+    "colors": "^1.1.2",
+    "iced-error": "0.0.9",
     "iced-runtime": "^1.0.3",
-    "jison": "^0.4.17"
+    "jison": "^0.4.17",
+    "minimist": "^1.2.0"
   },
   "devDependencies": {
     "iced-coffee-script": "^108.0.9"
