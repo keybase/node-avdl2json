@@ -7,11 +7,11 @@ Root
   ;
 
 Protocol
-  : ProtocolName LBRACE Statements RBRACE { $$ = new yy.Protocol ({ loc : @1, label : $1, statements : $3}); }
+  : ProtocolName LBRACE Statements RBRACE { $$ = new yy.Protocol ({ start : @1, label : $1, statements : $3}); }
   ;
 
 ProtocolaName
-  : Decorators PROTOCOL Identifier { $$ = new yy.ProtocolName ({ loc : @1, name : $2, decorators : $1 }); }
+  : Decorators PROTOCOL Identifier { $$ = new yy.ProtocolName ({ start: @1, name : $2, decorators : $1 }); }
   ;
 
 Decorators
@@ -20,7 +20,7 @@ Decorators
   ;
 
 Decorator
-  : AT_SIGN Identifier LPAREN Expr RPAREN { $$ = new yy.Decorator({ loc : @2, label : $2, args : $4 }); }
+  : AT_SIGN Identifier LPAREN Expr RPAREN { $$ = new yy.Decorator({ start: @2, label : $2, args : $4 }); }
   ;
 
 Statements
@@ -29,7 +29,7 @@ Statements
   ;
 
 Identifier
-  : IDENTIFIER { $$ = new yy.Identifier({loc : @1, name : $1 }); }
+  : IDENTIFIER { $$ = new yy.Identifier({start: @1, name : $1 }); }
   ;
 
 Statement
@@ -41,7 +41,7 @@ Statement
   ;
 
 Enum
-  : Decorators ENUM Identifier LBRACE EnumFields RBRACE { $$ = new yy.Enum({ loc : @1, decorators : $1, name : $3, constants : $5 }); }
+  : Decorators ENUM Identifier LBRACE EnumFields RBRACE { $$ = new yy.Enum({ start: @1, decorators : $1, name : $3, constants : $5 }); }
   ;
 
 EnumFields
@@ -50,7 +50,7 @@ EnumFields
   ;
 
 Record
-  : Decorators RECORD Identifier LBRACE Fields RBRACE { $$ = new yy.Record({ loc : @1, decorators : $1, name : $3, fields : $5 }); }
+  : Decorators RECORD Identifier LBRACE Fields RBRACE { $$ = new yy.Record({ start: @1, decorators : $1, name : $3, fields : $5 }); }
   ;
 
 Fields
@@ -59,31 +59,31 @@ Fields
   ;
 
 Field
-  : Type Identifier SEMICOLON { $$ = new yy.Field({ loc : @1, type : $1, name : $2 }); }
+  : Type Identifier SEMICOLON { $$ = new yy.Field({ start: @1, type : $1, name : $2 }); }
   ;
 
 Type
   : Array
   | Union
-  | STRING     { $$ = new yy.Type({loc: @1, string: true     }); }
-  | INT        { $$ = new yy.Type({loc: @1, int: true        }); }
-  | BOOLEAN    { $$ = new yy.Type({loc: @1, bool: true       }); }
-  | LONG       { $$ = new yy.Type({loc: @1, long: true       }); }
-  | Identifier { $$ = new yy.Type({loc: @1, custom: $1       }); }
-  | VOID       { $$ = new yy.Type({loc: @1, void_type: true  }); }
+  | STRING     { $$ = new yy.Type({start: @1, string: true     }); }
+  | INT        { $$ = new yy.Type({start: @1, int: true        }); }
+  | BOOLEAN    { $$ = new yy.Type({start: @1, bool: true       }); }
+  | LONG       { $$ = new yy.Type({start: @1, long: true       }); }
+  | Identifier { $$ = new yy.Type({start: @1, custom: $1       }); }
+  | VOID       { $$ = new yy.Type({start: @1, void_type: true  }); }
   ;
 
 TypeOrNull
   : Type
-  | NULL { new yy.Type({ loc : @1, null_type : true }); }
+  | NULL { new yy.Type({ start: @1, null_type : true }); }
   ;
 
 Value
-  : STRING_TOK { $$ = new yy.Value({loc: @1, string: yytext   }); }
-  | NUMBER     { $$ = new yy.Value({loc: @1, int: yytext      }); }
-  | TRUE       { $$ = new yy.Value({loc: @1, bool: true       }); }
-  | FALSE      { $$ = new yy.Value({loc: @1, bool: false      }); }
-  | NULL       { $$ = new yy.Value({loc: @1, null_value: true }); }
+  : STRING_TOK { $$ = new yy.Value({start: @1, string: yytext   }); }
+  | NUMBER     { $$ = new yy.Value({start: @1, int: yytext      }); }
+  | TRUE       { $$ = new yy.Value({start: @1, bool: true       }); }
+  | FALSE      { $$ = new yy.Value({start: @1, bool: false      }); }
+  | NULL       { $$ = new yy.Value({start: @1, null_value: true }); }
   ;
 
 ArrayOfValues
@@ -96,11 +96,11 @@ Values
   ;
 
 Array
-  : ARRAY LANGLE Type RANGLE { $$ = new yy.Array({ loc: @1, type : $3 }); }
+  : ARRAY LANGLE Type RANGLE { $$ = new yy.Array({ start: @1, type : $3 }); }
   ;
 
 Union
-  : UNION LBRACE TypeOrNullList RBRACE { $$ = new yy.Union({ loc : @1, types : $3 }); }
+  : UNION LBRACE TypeOrNullList RBRACE { $$ = new yy.Union({ start: @1, types : $3 }); }
   ;
 
 TypeOrNullList
@@ -109,11 +109,11 @@ TypeOrNullList
   ;
 
 Import
-  : IMPORT Identifier STRING_TOK { $$ = new yy.Import({ loc : @1, type : $2, path : $3 }); }
+  : IMPORT Identifier STRING_TOK { $$ = new yy.Import({ start: @1, type : $2, path : $3 }); }
   ;
 
 Message
-  : Decorators Type Identifier LPAREN Params RPAREN SEMICOLON { $$ = new yy.Message({ loc: @1, decorators : $1, returns : $2, name : $3, params : $5 }); }
+  : Decorators Type Identifier LPAREN Params RPAREN SEMICOLON { $$ = new yy.Message({ start: @1, decorators : $1, returns : $2, name : $3, params : $5 }); }
   ;
 
 Params
@@ -122,21 +122,21 @@ Params
   ;
 
 Param
-  : Type Identifier ParamDefault { $$ = new yy.Param({ loc: @1, type : $1, name : $2, def : $3 }); }
+  : Type Identifier ParamDefault { $$ = new yy.Param({ start: @1, type : $1, name : $2, def : $3 }); }
   ;
 
 ParamDefault
   : { $$ = null; }
-  | EQUALS Value { return new yy.Value({loc: @1, value : $2 }); }
+  | EQUALS Value { return new yy.Value({start: @1, value : $2 }); }
   ;
 
 Expr
   : Value
-  | ArrayOfValues { $$ = new yy.ValueArray({loc: @1, values : $1 }); }
+  | ArrayOfValues { $$ = new yy.ValueArray({start: @1, values : $1 }); }
   ;
 
 Fixed
-  : FIXED Identifier LPAREN NUMBER RPAREN SEMICOLON { $$ = new yy.Fixed({ loc : @1, type : $2, len : $4 }); }
+  : FIXED Identifier LPAREN NUMBER RPAREN SEMICOLON { $$ = new yy.Fixed({ start: @1, type : $2, len : $4 }); }
   ;
 
 String
@@ -145,11 +145,11 @@ String
      ;
 
 String1
-     : QUOTE1 StringFrags QUOTE1 { $$ = new yy.String({loc: @1, end: @3, val : "'" + $2 + "'" }); }
+     : QUOTE1 StringFrags QUOTE1 { $$ = new yy.String({start: @1, end: @3, val : "'" + $2 + "'" }); }
      ;
 
 String2
-     : QUOTE2 StringFrags QUOTE2 { $$ = new yy.String({loc: @1, end:@3, val : '"' + $2 + '"'}); }
+     : QUOTE2 StringFrags QUOTE2 { $$ = new yy.String({start: @1, end:@3, val : '"' + $2 + '"'}); }
      ;
 
 StringFrag
