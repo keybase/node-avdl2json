@@ -87,12 +87,12 @@ Value
   ;
 
 ArrayOfValues
-  | LBRACKET Values RBRACKET { $$ = $2 }
+  : LBRACKET Values RBRACKET { $$ = $2; }
   ;
 
 Values
-  : Value   { $$ = [$1]; }
-  | Values  { $$ = $1.concat($2); }
+  : Value        { $$ = [$1]; }
+  | Values Value { $$ = $1.concat($2); }
   ;
 
 Array
@@ -105,7 +105,7 @@ Union
 
 TypeOrNullList
   : TypeOrNull { $$ = [ $1 ]; }
-  | TypeOrNullList COMMA TypeOrNull { $$ = $1.concat($2);
+  | TypeOrNullList COMMA TypeOrNull { $$ = $1.concat($2); }
   ;
 
 Import
@@ -138,3 +138,26 @@ Expr
 Fixed
   : FIXED Identifier LPAREN NUMBER RPAREN SEMICOLON { $$ = new yy.Fixed({ loc : @1, type : $2, len : $4 }); }
   ;
+
+String
+     : String1 { $$ = $1; }
+     | String2 { $$ = $1; }
+     ;
+
+String1
+     : QUOTE1 StringFrags QUOTE1 { $$ = new yy.String({loc: @1, end: @3, val : "'" + $2 + "'" }); }
+     ;
+
+String2
+     : QUOTE2 StringFrags QUOTE2 { $$ = new yy.String({loc: @1, end:@3, val : '"' + $2 + '"'}); }
+     ;
+
+StringFrag
+     : STRING_FRAG { $$ = yytext; }
+     ;
+
+StringFrags
+     : { $$ = ""; }
+     | StringFrags STRING_FRAG { $$ = $1 + $2; }
+     ;
+
