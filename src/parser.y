@@ -7,11 +7,11 @@ Root
   ;
 
 Protocol
-  : ProtocolLabel LBRACE Statements RBRACE { $$ = new yy.Protocol ({ loc : @1, label : $1, statements : $3}); }
+  : ProtocolName LBRACE Statements RBRACE { $$ = new yy.Protocol ({ loc : @1, label : $1, statements : $3}); }
   ;
 
-ProtocolLabel
-  : Decorators Identifier { $$ = new yy.ProtocolLabel ({ loc : @1, name : $2, decorators : $1 }); }
+ProtocolaName
+  : Decorators PROTOCOL Identifier { $$ = new yy.ProtocolName ({ loc : @1, name : $2, decorators : $1 }); }
   ;
 
 Decorators
