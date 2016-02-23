@@ -19,5 +19,12 @@
   "bugs": {
     "url": "https://github.com/keybase/node-avdl2json/issues"
   },
-  "homepage": "https://github.com/keybase/node-avdl2json#readme"
+  "homepage": "https://github.com/keybase/node-avdl2json#readme",
+  "dependencies": {
+    "iced-runtime": "^1.0.3",
+    "jison": "^0.4.17"
+  },
+  "devDependencies": {
+    "iced-coffee-script": "^108.0.9"
+  }
 }
