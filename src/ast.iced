@@ -29,11 +29,11 @@ class Protocol extends Node
       m.to_json out.messages
     out
   get_all_protocols : () ->
-    ret = [ @ ]
+    ret = [ ]
     for i in @get_imports()
       for p in i.protocol.get_all_protocols()
         ret.push p
-    console.log ret
+    ret.push @
     ret
 
 #=======================================================================
