@@ -6,20 +6,21 @@
 
 <INITIAL>\s+       /* skip space */
 
-<INITIAL>"record"   return 'RECORD';
-<INITIAL>"union"    return 'UNION';
-<INITIAL>"enum"     return 'ENUM';
-<INITIAL>"array"    return 'ARRAY';
-<INITIAL>"protocol" return 'PROTOCOL';
-<INITIAL>"fixed"    return 'FIXED';
-<INITIAL>"string"   return 'STRING';
-<INITIAL>"int"      return 'INT';
-<INITIAL>"import"   return 'IMPORT';
-<INITIAL>"long"     return 'LONG';
-<INITIAL>"string"   return 'STRING';
-<INITIAL>"boolean"  return 'BOOLEAN';
-<INITIAL>"void"     return 'VOID';
-<INITIAL>"null"     return 'NULL';
+<INITIAL>"record"    return 'RECORD';
+<INITIAL>"union"     return 'UNION';
+<INITIAL>"enum"      return 'ENUM';
+<INITIAL>"array"     return 'ARRAY';
+<INITIAL>"protocol"  return 'PROTOCOL';
+<INITIAL>"fixed"     return 'FIXED';
+<INITIAL>"string"    return 'STRING';
+<INITIAL>"int"       return 'INT';
+<INITIAL>"import"    return 'IMPORT';
+<INITIAL>"long"      return 'LONG';
+<INITIAL>"string"    return 'STRING';
+<INITIAL>"boolean"   return 'BOOLEAN';
+<INITIAL>"void"      return 'VOID';
+<INITIAL>"namespace" return 'NAMESPACE';
+<INITIAL>"null"      return 'NULL';
 
 <INITIAL>[a-zA-Z_][a-zA-Z_0-9]* { return 'IDENTIFIER'; }
 <INITIAL>[-]?[0-9]*\.[0-9]+ {return 'NUMBER'; }

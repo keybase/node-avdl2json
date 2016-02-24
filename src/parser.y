@@ -9,11 +9,16 @@ Root
   ;
 
 Protocol
-  : ProtocolName LBRACE Statements RBRACE { $$ = new yy.Protocol({ start : @1, label : $1, statements : $3}); }
+  : NamespaceOpt PROTOCOL Identifier LBRACE Statements RBRACE { $$ = new yy.Protocol({ start : @1, namespace : $1, name : $3, statements : $5, }); }
   ;
 
-ProtocolName
-  : Decorators PROTOCOL Identifier { $$ = new yy.ProtocolName({ start: @1, name : $2, decorators : $1 }); }
+Namespace
+  : AT_SIGN NAMESPACE LPAREN String RPAREN { $$ = $4.eval_to_string() }
+  ;
+
+NamespaceOpt
+  : { $$ = null }
+  | Namespace
   ;
 
 Decorators
@@ -48,7 +53,7 @@ Enum
 
 EnumFields
   : Identifier { $$ = [ $1 ]; }
-  | EnumFields COMMA Identifier { $$ = $1.concat($2) }
+  | EnumFields COMMA Identifier { $$ = $1.concat($3) }
   ;
 
 Record
@@ -56,7 +61,7 @@ Record
   ;
 
 Fields
-  : { $$ = [ $1 ]; }
+  : { $$ = []; }
   | Fields Field { $$ = $1.concat($2); }
   ;
 
@@ -67,17 +72,17 @@ Field
 Type
   : ArrayType
   | Union
-  | STRING     { $$ = new yy.Type({start: @1, string: true     }); }
-  | INT        { $$ = new yy.Type({start: @1, int: true        }); }
-  | BOOLEAN    { $$ = new yy.Type({start: @1, bool: true       }); }
-  | LONG       { $$ = new yy.Type({start: @1, long: true       }); }
-  | Identifier { $$ = new yy.Type({start: @1, custom: $1       }); }
-  | VOID       { $$ = new yy.Type({start: @1, void_type: true  }); }
+  | STRING     { $$ = new yy.Type({start: @1, prim: 'string'  }); }
+  | INT        { $$ = new yy.Type({start: @1, prim: 'int'     }); }
+  | BOOLEAN    { $$ = new yy.Type({start: @1, prim: 'boolean' }); }
+  | LONG       { $$ = new yy.Type({start: @1, prim: 'long'    }); }
+  | Identifier { $$ = new yy.Type({start: @1, custom: $1      }); }
+  | VOID       { $$ = new yy.Type({start: @1, void_type: true }); }
   ;
 
 TypeOrNull
   : Type
-  | NULL { new yy.Type({ start: @1, null_type : true }); }
+  | NULL { $$ = new yy.Type({ start: @1, null_type : true }); }
   ;
 
 Value
@@ -107,7 +112,7 @@ Union
 
 TypeOrNullList
   : TypeOrNull { $$ = [ $1 ]; }
-  | TypeOrNullList COMMA TypeOrNull { $$ = $1.concat($2); }
+  | TypeOrNullList COMMA TypeOrNull { $$ = $1.concat($3); }
   ;
 
 Import
@@ -147,24 +152,24 @@ Fixed
   ;
 
 String
-     : String1 { $$ = $1; }
-     | String2 { $$ = $1; }
-     ;
+  : String1 { $$ = $1; }
+  | String2 { $$ = $1; }
+  ;
 
 String1
-     : QUOTE1 StringFrags QUOTE1 { $$ = new yy.String({start: @1, end: @3, val : "'" + $2 + "'" }); }
-     ;
+  : QUOTE1 StringFrags QUOTE1 { $$ = new yy.String({start: @1, end: @3, val : "'" + $2 + "'" }); }
+  ;
 
 String2
-     : QUOTE2 StringFrags QUOTE2 { $$ = new yy.String({start: @1, end:@3, val : '"' + $2 + '"'}); }
-     ;
+  : QUOTE2 StringFrags QUOTE2 { $$ = new yy.String({start: @1, end:@3, val : '"' + $2 + '"'}); }
+  ;
 
 StringFrag
-     : STRING_FRAG { $$ = yytext; }
-     ;
+  : STRING_FRAG { $$ = yytext; }
+  ;
 
 StringFrags
-     : { $$ = ""; }
-     | StringFrags STRING_FRAG { $$ = $1 + $2; }
-     ;
+  : { $$ = ""; }
+  | StringFrags STRING_FRAG { $$ = $1 + $2; }
+  ;
 

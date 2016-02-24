@@ -107,7 +107,7 @@ class Main
   #---------------
 
   output : ({ast}, cb) ->
-    console.log ast
+    console.log JSON.stringify ast.to_json()
     cb null
 
   #---------------
