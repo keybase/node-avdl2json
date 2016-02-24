@@ -107,8 +107,9 @@ class Main
   #---------------
 
   output : ({ast}, cb) ->
-    console.log JSON.stringify ast.to_json()
-    cb null
+    json = ast.to_json()
+    await fs.writeFile @outfile, JSON.stringify(json), defer err
+    cb err
 
   #---------------
 
