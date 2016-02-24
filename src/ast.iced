@@ -16,7 +16,6 @@ class Protocol extends Node
   constructor : ({start, end, @name, @statements, @namespace }) -> super { start, end }
   get_imports : () -> (i for i in @statements when i.is_import())
   get_type_decls : () -> (t for t in @statements when t.is_type_decl())
-  get_all_protocols : () -> (i.protocol for i in @get_imports()).concat [ @ ]
   get_all_messages : () -> (m for m in @statements when m.is_message())
   to_json : () ->
     out = { protocol : @name.to_json() }
@@ -29,6 +28,13 @@ class Protocol extends Node
     for m in @get_all_messages()
       m.to_json out.messages
     out
+  get_all_protocols : () ->
+    ret = [ @ ]
+    for i in @get_imports()
+      for p in i.protocol.get_all_protocols()
+        ret.push p
+    console.log ret
+    ret
 
 #=======================================================================
 
@@ -71,7 +77,7 @@ class Type extends Node
     if @prim? then @prim
     else if @custom? then @custom.to_json()
     else if @null_type? then "null"
-    else if @void_type then null
+    else if @void_type then "null"
 
 #=======================================================================
 
