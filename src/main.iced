@@ -1,10 +1,10 @@
 
 fs = require 'fs'
-{parser,Parser} = require './parser'
+{Parser} = require './parser'
 minimist = require 'minimist'
 {make_esc} = require 'iced-error'
 colors = require 'colors'
-ast = require './ast'
+astmod = require './ast'
 
 #================================================
 
@@ -13,7 +13,78 @@ usage = () ->
 
 #================================================
 
-class Runner
+class Stack
+  constructor : (@d) ->
+    @d or= {}
+  push : (nm) ->
+    ret = {}
+    for k,v of @d
+      ret[k] = v
+    ret[nm] = true
+    return new Stack ret
+  lookup : (nm) -> @d[nm]
+
+#================================================
+
+class FileRunner
+
+  #---------------
+
+  constructor : ({@infile, @stack}) ->
+    @stack or= new Stack
+
+  #---------------
+
+  open_infile : (opts, cb) ->
+    esc = make_esc cb, "open_infile"
+    await fs.readFile @infile, esc defer dat
+    cb null, dat.toString('utf8')
+
+  #---------------
+
+  parse : ({dat}, cb) ->
+    parser = new Parser()
+    parser.yy = astmod
+    ast = null
+    try
+      ast = parser.parse dat
+    catch e
+      err = new Error("Parse error in: " + @infile + ": " + e.message)
+    cb err, ast
+
+  #---------------
+
+  recurse : ({ast}, cb) ->
+    esc = make_esc cb, "recurse"
+    err = null
+    for i in ast.get_imports()
+      if @stack.lookup (nm = i.get_path().eval_to_string())
+        err = new Error "import cycle found with '#{nm}'"
+        break
+      p = new FileRunner { infile : nm, stack : @stack.push(nm)}
+      await p.run {}, esc defer ast
+      i.set_protocol ast
+    cb err
+
+  #---------------
+
+  run : (opts, cb) ->
+    esc = make_esc cb, "run"
+    await @open_infile {}, esc defer dat
+    await @parse { dat }, esc defer ast
+    await @recurse { ast }, esc defer()
+    cb null, ast
+
+#================================================
+
+parse = ({infile}, cb) ->
+  p = new FileRunner { infile }
+  await p.run {}, defer err, ast
+  cb err, ast
+
+#================================================
+
+class Main
 
   #---------------
 
@@ -27,7 +98,6 @@ class Runner
       usage()
       err = new Error "usage: shown!"
     else
-      console.log argv
       @outfile = argv.o
       @infile = argv.i
       unless @outfile? and @infile?
@@ -36,27 +106,8 @@ class Runner
 
   #---------------
 
-  open_infile : (opts, cb) ->
-    await fs.readFile @infile, defer err, dat
-    cb err, dat.toString('utf8')
-
-  #---------------
-
-  parse : ({dat}, cb) ->
-    # parser = new Parser()
-    parser.yy = ast
-    try
-      res = parser.parse dat
-      console.log parser.yy.output
-      @ast = parser.yy.output
-    catch e
-      err = new Error("Parse error in: " + @infile + ": " + e.message)
-    cb err
-
-  #---------------
-
-  output : (opts, cb) ->
-    console.log @ast
+  output : ({ast}, cb) ->
+    console.log ast
     cb null
 
   #---------------
@@ -64,16 +115,15 @@ class Runner
   main : ({argv}, cb) ->
     esc = make_esc cb, "main"
     await @parse_argv {argv}, esc defer()
-    await @open_infile {}, esc defer dat
-    await @parse {dat}, esc defer()
-    await @output {}, esc defer()
+    await parse { @infile }, esc defer ast
+    await @output {ast}, esc defer()
     cb null
 
 #================================================
 
 exports.main = () ->
-  runner = new Runner
-  await runner.main { argv :process.argv[2...] }, defer err
+  main = new Main
+  await main.main { argv :process.argv[2...] }, defer err
   rc = 0
   if err?
     rc = -2

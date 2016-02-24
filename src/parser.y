@@ -4,7 +4,7 @@
 
 Root
   : Protocol {
-    yy.output = $1; console.log($1);
+  return $1;
     }
   ;
 
@@ -56,7 +56,7 @@ Record
   ;
 
 Fields
-  : Field { $$ = [ $1 ]; }
+  : { $$ = [ $1 ]; }
   | Fields Field { $$ = $1.concat($2); }
   ;
 

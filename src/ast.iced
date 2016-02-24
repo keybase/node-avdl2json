@@ -1,8 +1,13 @@
 
 class Node
   constructor : ( {@start, @end} ) ->
+  is_import : () -> false
+
 class Protocol extends Node
   constructor : ({start, end, @label, @statements }) -> super { start, end }
+  get_imports : () ->
+    return (i for i in @statements when i.is_import())
+
 class ProtocolName extends Node
   constructor : ({start, end, @name, @decorators}) -> super { start, end }
 class Decorator extends Node
@@ -25,6 +30,9 @@ class Union extends Node
   constructor : ({start, end, @types }) -> super { start, end }
 class Import extends Node
   constructor : ({start, end, @type, @path }) -> super { start, end }
+  is_import : () -> true
+  set_protocol : (ast) -> @protocol = ast
+  get_path : () -> @path
 class Message extends Node
   constructor : ({start, end, @decorators, @name, @params, @return_type }) -> super { start, end }
 class Param extends Node
@@ -35,6 +43,7 @@ class Fixed extends Node
   constructor : ({start, end, @type, @len }) -> super { start, end }
 class String extends Node
   constructor : ({start, end, @type, @val }) -> super { start, end }
+  eval_to_string : () -> return JSON.parse @val
 
 module.exports = {
   Protocol, ProtocolName, Decorator, Identifier, Enum,
