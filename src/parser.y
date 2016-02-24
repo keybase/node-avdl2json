@@ -22,8 +22,12 @@ NamespaceOpt
   ;
 
 Decorators
+  : Doc DecoratorList { $$ = new yy.Decorators({start : @1, doc : $1, decorator_list: $2}); }
+  ;
+
+DecoratorList
   : { $$ = []; }
-  | Decorators Decorator { $$ = $1.concat($2) }
+  | DecoratorList Decorator {$$ = $1.concat($2) }
   ;
 
 Decorator
@@ -173,3 +177,15 @@ StringFrags
   | StringFrags STRING_FRAG { $$ = $1 + $2; }
   ;
 
+Doc
+  : DocRaw { $$ = new yy.Doc({start : @1, raw: $1 }); }
+  ;
+
+DocRaw
+  : { $$ = ""; }
+  | DocRaw DocFrag { $$ = $1 + $2; }
+  ;
+
+DocFrag
+  : DOC_FRAG { $$ = yytext; }
+  ;

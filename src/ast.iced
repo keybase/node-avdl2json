@@ -6,9 +6,7 @@ class Node
   is_import : () -> false
   is_type_decl : () -> false
   is_message : () -> false
-  decorate : (out) ->
-    if @decorators? then (d.decorate(out) for d in @decorators)
-    out
+  decorate : (out) -> if @decorators? then @decorators.decorate(out) else out
 
 #=======================================================================
 
@@ -28,10 +26,12 @@ class Protocol extends Node
     for m in @get_all_messages()
       m.to_json out.messages
     out
-  get_all_protocols : () ->
+  get_all_protocols : (seen) ->
     ret = [ ]
-    for i in @get_imports()
-      for p in i.protocol.get_all_protocols()
+    seen or= {}
+    for i in @get_imports() when not seen[nm = i.path.eval_to_string()]
+      seen[nm] = true
+      for p in i.protocol.get_all_protocols(seen)
         ret.push p
     ret.push @
     ret
@@ -44,6 +44,15 @@ class Decorator extends Node
 
 #=======================================================================
 
+class Decorators extends Node
+  constructor : ({start, end, @doc, @decorator_list}) ->
+    super { start, end }
+  decorate : (out) ->
+    out.doc = d if (d = @doc.get_doc_string())?
+    (d.decorate(out) for d in @decorator_list)
+    out
+
+#=======================================================================
 
 class Identifier extends Node
   constructor : ({start, end, @name }) -> super { start, end }
@@ -150,8 +159,16 @@ class String extends Node
 
 #=======================================================================
 
+class Doc extends Node
+  constructor : ( {start, end, raw} ) ->
+    super { start, end }
+    @doc = raw.trim()
+  get_doc_string : () -> if @doc.length then @doc else null
+
+#=======================================================================
+
 module.exports = {
-  Protocol, Decorator, Identifier, Enum,
+  Protocol, Decorator, Identifier, Enum, Decorators,
   Record, Field, Type, Value, ArrayType, Union,
-  Import, Message, Param, ArrayValue, Fixed, String
+  Import, Message, Param, ArrayValue, Fixed, String, Doc
 }

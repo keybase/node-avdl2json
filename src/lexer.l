@@ -1,5 +1,5 @@
 
-%s ST_QUOTE2 ST_QUOTE1 ST_COMMENT
+%s ST_QUOTE2 ST_QUOTE1 ST_COMMENT ST_DOC
 %%
 
 <INITIAL>"//".*     /* skip over C++-style comments */
@@ -44,6 +44,7 @@
 
 <INITIAL>"\""       { this.begin ('ST_QUOTE2'); return 'QUOTE2'; }
 <INITIAL>"'"        { this.begin ('ST_QUOTE1'); return 'QUOTE1'; }
+<INITIAL>"/**"      { this.begin ('ST_DOC'); }
 <INITIAL>"/*"       { this.begin ('ST_COMMENT'); }
 
 <INITIAL>[^!./{}()\[\];,:"'\s]+    return 'GENERIC';
@@ -54,8 +55,8 @@
 <ST_QUOTE2>"\""     { this.popState (); return "QUOTE2"; }
 <ST_QUOTE2><<EOF>>  return 'EOF';
 
-<ST_QUOTE1>"\\".    return 'STRING_ATOM';
-<ST_QUOTE1>[^\\']+  return 'STRING_ATOM';
+<ST_QUOTE1>"\\".    return 'STRING_FRAG';
+<ST_QUOTE1>[^\\']+  return 'STRING_FRAG';
 <ST_QUOTE1>"'"      { this.popState (); return "QUOTE1"; }
 <ST_QUOTE1><<EOF>>  return 'EOF';
 
@@ -63,3 +64,8 @@
 <ST_COMMENT>"*"     /* ignore */
 <ST_COMMENT>[^*]+   /* ignore */
 <ST_COMMENT><<EOF>> return 'EOF';
+
+<ST_DOC>"*/"    { this.popState(); }
+<ST_DOC>"*"     { return 'DOC_FRAG'; }
+<ST_DOC>[^*]+   { return 'DOC_FRAG'; }
+<ST_DOC><<EOF>> return 'EOF';
