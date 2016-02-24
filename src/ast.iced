@@ -34,7 +34,7 @@ class Protocol extends Node
 
 class Decorator extends Node
   constructor : ({start, end, @label, @args }) -> super { start, end }
-  decorate : (out) -> out[@label] = @args.to_json()
+  decorate : (out) -> out[@label.to_json()] = @args.to_json()
 
 #=======================================================================
 

@@ -23,7 +23,7 @@ NamespaceOpt
 
 Decorators
   : { $$ = []; }
-  | Decorators Decorator { $$ = $1.concat($1) }
+  | Decorators Decorator { $$ = $1.concat($2) }
   ;
 
 Decorator
