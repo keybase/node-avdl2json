@@ -108,7 +108,7 @@ class Main
 
   output : ({ast}, cb) ->
     json = ast.to_json()
-    await fs.writeFile @outfile, JSON.stringify(json), defer err
+    await fs.writeFile @outfile, JSON.stringify(json, null, 2), defer err
     cb err
 
   #---------------

@@ -86,7 +86,7 @@ TypeOrNull
   ;
 
 Value
-  : String
+  : String     { $$ = new yy.Value({start: @1, string: $1       }); }
   | NUMBER     { $$ = new yy.Value({start: @1, int: yytext      }); }
   | TRUE       { $$ = new yy.Value({start: @1, bool: true       }); }
   | FALSE      { $$ = new yy.Value({start: @1, bool: false      }); }
@@ -130,7 +130,7 @@ ParamsOpt
 
 Params
   : Param { $$ = [ $1 ]; }
-  | Params COMMA Param { $$ = $1.concat($2); }
+  | Params COMMA Param { $$ = $1.concat($3); }
   ;
 
 Param
@@ -139,7 +139,7 @@ Param
 
 ParamDefault
   : { $$ = null; }
-  | EQUALS Value { return new yy.Value({start: @1, value : $2 }); }
+  | EQUALS Value { $$ = $2; }
   ;
 
 Expr

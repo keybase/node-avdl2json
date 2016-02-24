@@ -18,12 +18,16 @@
 <INITIAL>"long"      return 'LONG';
 <INITIAL>"string"    return 'STRING';
 <INITIAL>"boolean"   return 'BOOLEAN';
+<INITIAL>"true"      return 'TRUE';
+<INITIAL>"false"     return 'FALSE';
+<INITIAL>"void"      return 'VOID';
+<INITIAL>"void"      return 'VOID';
 <INITIAL>"void"      return 'VOID';
 <INITIAL>"namespace" return 'NAMESPACE';
 <INITIAL>"null"      return 'NULL';
 
 <INITIAL>[a-zA-Z_][a-zA-Z_0-9]* { return 'IDENTIFIER'; }
-<INITIAL>[-]?[0-9]*\.[0-9]+ {return 'NUMBER'; }
+<INITIAL>[-]?[0-9]+             { return 'NUMBER'; }
 
 <INITIAL>"{"        return 'LBRACE';
 <INITIAL>"}"        return 'RBRACE';
