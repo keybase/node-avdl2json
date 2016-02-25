@@ -8,3 +8,8 @@ lib/parser.js: src/parser.y src/lexer.l
 	${JISON} -o $@ $^
 lib/%.js: src/%.iced
 	$(ICED) -I node -c -o `dirname $@` $<
+
+test:
+	(cd test && iced ./run.iced)
+
+.PHONY: test
