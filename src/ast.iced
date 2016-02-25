@@ -125,10 +125,11 @@ class Message extends Node
   constructor : ({start, end, decorators, @name, @params, @return_type }) -> super { start, end, decorators }
   is_message : () -> true
   to_json : (out) ->
-    out[@name.to_json()] = {
+    msg = {
       request : (p.to_json() for p in @params)
       response : @return_type.to_json()
     }
+    out[@name.to_json()] = @decorate msg
     return out
 
 #=======================================================================
@@ -150,6 +151,7 @@ class ArrayValue extends Node
 class Fixed extends Node
   constructor : ({start, end, @type, @len }) -> super { start, end }
   is_type_decl : () -> true
+  to_json : () -> @decorate { type : "fixed", name : @type.to_json(), size : @len }
 
 #=======================================================================
 
