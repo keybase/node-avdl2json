@@ -117,6 +117,8 @@ exports.Main = class Main
     else if (@batch = argv.b)
       @outdir = argv.o
       @infiles = argv._
+      @forcefiles = {}
+      (@forcefiles[f] = true for f in argv.f)
       unless @outdir? and @infiles.length
         err = new Error "need an [-o <outdir>] and input files in batch mode"
     else
@@ -146,7 +148,7 @@ exports.Main = class Main
     for f in @infiles
       outfile = @make_outfile f
       await parse { infile : f }, esc defer ast
-      if ast.has_messages()
+      if ast.has_messages() or @forcefiles[f]
         await output { ast, outfile }, esc defer()
         console.log "Compiling #{f} -> #{outfile}"
     cb null
