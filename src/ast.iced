@@ -106,6 +106,12 @@ class ArrayType extends Node
 
 #=======================================================================
 
+class MapType extends Node
+  constructor : ({start, end, @values }) -> super { start, end }
+  to_json : () -> { type : "map", values : @values.to_json() }
+
+#=======================================================================
+
 class Union extends Node
   constructor : ({start, end, @types, decorators }) -> super { start, end, decorators }
   is_type_decl : () -> true
@@ -172,5 +178,6 @@ class Doc extends Node
 module.exports = {
   Protocol, Decorator, Identifier, Enum, Decorators,
   Record, Field, Type, Value, ArrayType, Union,
-  Import, Message, Param, ArrayValue, Fixed, String, Doc
+  Import, Message, Param, ArrayValue, Fixed, String, Doc,
+  MapType
 }

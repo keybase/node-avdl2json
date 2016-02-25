@@ -76,6 +76,7 @@ Field
 Type
   : ArrayType
   | Union
+  | MapType
   | STRING     { $$ = new yy.Type({start: @1, prim: 'string'  }); }
   | INT        { $$ = new yy.Type({start: @1, prim: 'int'     }); }
   | BOOLEAN    { $$ = new yy.Type({start: @1, prim: 'boolean' }); }
@@ -108,6 +109,10 @@ Values
 
 ArrayType
   : ARRAY LANGLE Type RANGLE { $$ = new yy.ArrayType({ start: @1, type : $3 }); }
+  ;
+
+MapType
+  : MAP LANGLE Type RANGLE { $$ = new yy.MapType({ start: @1, values : $3 }); }
   ;
 
 Union

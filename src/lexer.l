@@ -8,6 +8,7 @@
 
 <INITIAL>"record"    return 'RECORD';
 <INITIAL>"union"     return 'UNION';
+<INITIAL>"map"       return 'MAP';
 <INITIAL>"enum"      return 'ENUM';
 <INITIAL>"array"     return 'ARRAY';
 <INITIAL>"protocol"  return 'PROTOCOL';

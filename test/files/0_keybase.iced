@@ -12,8 +12,6 @@ test_file = (T,nm,cb) ->
   await fs.readFile out, T.esc(defer(out_dat), cb)
   dat2 = JSON.parse out_dat
   T.equal dat.to_json(), dat2, "equality of output"
-  console.log JSON.stringify dat.to_json()
-  console.log JSON.stringify dat2
   T.waypoint nm
   cb null
 
