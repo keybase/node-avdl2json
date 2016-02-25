@@ -1,5 +1,5 @@
 {
-  "name": "advl2json",
+  "name": "avdl2json",
   "version": "1.0.0",
   "description": "An AVDL-to-JSON compiler",
   "main": "lib/main.js",
