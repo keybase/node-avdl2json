@@ -1,0 +1,17 @@
+@namespace("keybase.1")
+
+protocol ctl {
+
+  import idl "common.avdl";
+
+  enum ExitCode {
+    OK_0,
+    NOTOK_2,
+    RESTART_4
+  }
+
+  void stop(int sessionID, ExitCode exitCode);
+  void logRotate(int sessionID);
+  void reload(int sessionID);
+  void dbNuke(int sessionID);
+}

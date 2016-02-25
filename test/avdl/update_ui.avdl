@@ -1,0 +1,34 @@
+
+@namespace("keybase.1")
+protocol updateUi {
+
+  import idl "common.avdl";
+  import idl "update_common.avdl";
+
+  enum UpdateAction {
+    UPDATE_0,
+    SKIP_1,
+    SNOOZE_2,
+    CANCEL_3
+  }
+
+  record UpdatePromptRes {
+    UpdateAction action;
+    boolean alwaysAutoInstall;
+    Time snoozeUntil;
+  }
+
+  record UpdatePromptOptions {
+    boolean alwaysAutoInstall;
+  }
+
+  UpdatePromptRes updatePrompt(int sessionID, Update update, UpdatePromptOptions options);
+
+  record UpdateQuitRes {
+    boolean quit; // Whether we can quit
+    int pid;
+    string applicationPath; // So the updater can restart
+  }
+
+  UpdateQuitRes updateQuit();
+}

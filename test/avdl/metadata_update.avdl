@@ -1,0 +1,8 @@
+@namespace("keybase.1")
+
+protocol metadataUpdate {
+  import idl "backend_common.avdl";
+
+  void metadataUpdate(string folderID, long revision);
+  void folderNeedsRekey(string folderID, long revision);
+}

@@ -1,0 +1,102 @@
+
+@namespace("keybase.1")
+protocol config {
+
+  import idl "common.avdl";
+
+  record GetCurrentStatusRes {
+    boolean configured;
+    boolean registered;
+    boolean loggedIn;
+    union { null, User } user;
+  }
+
+  GetCurrentStatusRes getCurrentStatus(int sessionID);
+
+  record SessionStatus {
+    string SessionFor;
+    boolean Loaded;
+    boolean Cleared;
+    boolean SaltOnly;
+    boolean Expired;
+  }
+
+  record ClientDetails {
+    int pid;
+    ClientType clientType;
+    array<string> argv;
+    string desc;
+    string version;
+  }
+
+  record PlatformInfo {
+    string os;
+    string arch;
+    string goVersion;
+  }
+
+  record ExtendedStatus {
+    boolean standalone;
+    boolean passphraseStreamCached;
+    union { null, Device } device;
+    string logDir;
+    union { null, SessionStatus } session;
+    string defaultUsername;
+    array<string> provisionedUsernames;
+    array<ClientDetails> Clients;
+    PlatformInfo platformInfo;
+  }
+
+  ExtendedStatus getExtendedStatus(int sessionID);
+
+  enum ForkType {
+    NONE_0,
+    AUTO_1,
+    WATCHDOG_2,
+    LAUNCHD_3
+  }
+
+  record Config {
+    string serverURI;
+    string socketFile;
+    string label;
+    string runMode;
+    boolean gpgExists;
+    string gpgPath;
+    string version;
+    string path;
+    string configPath;
+    string versionShort;
+    string versionFull;
+    boolean isAutoForked;
+    ForkType forkType;
+  }
+
+  // A poor man's union, since we only currently supprt union { null, T }
+  record ConfigValue {
+    boolean isNull;
+    union { null, boolean } b;
+    union { null, int } i;
+    union { null, string } s;
+    union { null, string } o;
+  }
+
+  Config getConfig(int sessionID);
+
+  /**
+    Change user config.
+    For example, to update primary picture source:
+      key=picture.source, value=twitter (or github)
+    */
+  void setUserConfig(int sessionID, string username, string key, string value);
+
+  // setPath tells the service the client's PATH so that it can augment its own PATH if necessary.
+  void setPath(int sessionID, string path);
+
+  void helloIAm(ClientDetails details);
+
+  void setValue(string path, ConfigValue value);
+  void clearValue(string path);
+  ConfigValue getValue(string path);
+
+}

@@ -1,0 +1,17 @@
+@namespace("keybase.1")
+
+protocol backendCommon {
+  import idl "common.avdl";
+
+  record BlockIdCombo{
+    string blockHash;
+    UID chargedTo;
+  }
+
+  record ChallengeInfo {
+    long now;
+    string challenge;
+  }
+}
+
+
