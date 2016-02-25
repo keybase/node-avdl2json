@@ -145,12 +145,10 @@ exports.Main = class Main
     esc = make_esc cb, "do_batch_mode"
     for f in @infiles
       outfile = @make_outfile f
-      await @skip_infile { infile : f, outfile }, esc defer skip
-      unless skip
-        await parse { infile : f }, esc defer ast
-        if ast.has_messages()
-          await output { ast, outfile }, esc defer()
-          console.log "Compiling #{f} -> #{outfile}"
+      await parse { infile : f }, esc defer ast
+      if ast.has_messages()
+        await output { ast, outfile }, esc defer()
+        console.log "Compiling #{f} -> #{outfile}"
     cb null
 
   #---------------
