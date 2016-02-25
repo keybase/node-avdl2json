@@ -5,6 +5,7 @@ minimist = require 'minimist'
 {make_esc} = require 'iced-error'
 colors = require 'colors'
 astmod = require './ast'
+pathmod = require 'path'
 
 #================================================
 
@@ -26,18 +27,24 @@ class Stack
 
 #================================================
 
-class FileRunner
+exports.FileRunner = class FileRunner
 
   #---------------
 
-  constructor : ({@infile, @stack}) ->
+  constructor : ({@infile, @stack, @dir}) ->
     @stack or= new Stack
+
+  #---------------
+
+  get_infile : () ->
+    ret = pathmod.join @dir, @infile
+    return ret
 
   #---------------
 
   open_infile : (opts, cb) ->
     esc = make_esc cb, "open_infile"
-    await fs.readFile @infile, esc defer dat
+    await fs.readFile @get_infile(), esc defer dat
     cb null, dat.toString('utf8')
 
   #---------------
@@ -61,7 +68,7 @@ class FileRunner
       if @stack.lookup (nm = i.get_path().eval_to_string())
         err = new Error "import cycle found with '#{nm}'"
         break
-      p = new FileRunner { infile : nm, stack : @stack.push(nm)}
+      p = new FileRunner { infile : nm, stack : @stack.push(nm), @dir}
       await p.run {}, esc defer ast
       i.set_protocol ast
     cb err
@@ -77,14 +84,14 @@ class FileRunner
 
 #================================================
 
-parse = ({infile}, cb) ->
-  p = new FileRunner { infile }
+exports.parse = parse = ({infile}, cb) ->
+  p = new FileRunner { infile : pathmod.basename(infile), dir : pathmod.dirname(infile) }
   await p.run {}, defer err, ast
   cb err, ast
 
 #================================================
 
-class Main
+exports.Main = class Main
 
   #---------------
 
