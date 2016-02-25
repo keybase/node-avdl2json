@@ -10,7 +10,10 @@ pathmod = require 'path'
 #================================================
 
 usage = () ->
-  console.error """usage: avd2ljson -i <infile> -o <outfile>"""
+  console.error """usage:
+    single file: avd2ljson -i <infile> -o <outfile>
+    batch:       avd2ljson -b -o <outdir> <infiles...>
+"""
 
 #================================================
 
@@ -91,6 +94,13 @@ exports.parse = parse = ({infile}, cb) ->
 
 #================================================
 
+exports.output = output = ({ast, outfile}, cb) ->
+  json = ast.to_json()
+  await fs.writeFile outfile, JSON.stringify(json, null, 2), defer err
+  cb err
+
+#================================================
+
 exports.Main = class Main
 
   #---------------
@@ -104,6 +114,11 @@ exports.Main = class Main
     if argv.h
       usage()
       err = new Error "usage: shown!"
+    else if (@batch = argv.b)
+      @outdir = argv.o
+      @infiles = argv._
+      unless @outdir? and @infiles.length
+        err = new Error "need an [-o <outdir>] and input files in batch mode"
     else
       @outfile = argv.o
       @infile = argv.i
@@ -113,18 +128,41 @@ exports.Main = class Main
 
   #---------------
 
-  output : ({ast}, cb) ->
-    json = ast.to_json()
-    await fs.writeFile @outfile, JSON.stringify(json, null, 2), defer err
-    cb err
+  make_outfile : (f) -> pathmod.join @outdir, ((pathmod.basename f, '.avdl') + ".json")
+
+  #---------------
+
+  skip_infile : ({infile, outfile}, cb) ->
+    esc = make_esc cb, "skip_infile"
+    await
+      fs.stat infile,  esc defer s0
+      fs.stat outfile, defer err, s1
+    cb null, (not(err?) and (s0.mtime <= s1.mtime))
+
+  #---------------
+
+  do_batch_mode : (opts, cb) ->
+    esc = make_esc cb, "do_batch_mode"
+    for f in @infiles
+      outfile = @make_outfile f
+      await @skip_infile { infile : f, outfile }, esc defer skip
+      unless skip
+        await parse { infile : f }, esc defer ast
+        if ast.has_messages()
+          await output { ast, outfile }, esc defer()
+          console.log "Compiling #{f} -> #{outfile}"
+    cb null
 
   #---------------
 
   main : ({argv}, cb) ->
     esc = make_esc cb, "main"
     await @parse_argv {argv}, esc defer()
-    await parse { @infile }, esc defer ast
-    await @output {ast}, esc defer()
+    if @batch
+      await @do_batch_mode {}, esc defer()
+    else
+      await parse { @infile }, esc defer ast
+      await output {ast, @outfile}, esc defer()
     cb null
 
 #================================================

@@ -15,6 +15,7 @@ class Protocol extends Node
   get_imports : () -> (i for i in @statements when i.is_import())
   get_type_decls : () -> (t for t in @statements when t.is_type_decl())
   get_all_messages : () -> (m for m in @statements when m.is_message())
+  has_messages : () -> @get_all_messages().length > 0
   to_json : () ->
     out = { protocol : @name.to_json() }
     out.namespace = @namespace if @namespace
