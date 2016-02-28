@@ -55,7 +55,9 @@ exports.FileRunner = class FileRunner
   parse : ({dat}, cb) ->
     parser = new Parser()
     parser.yy = astmod
-    if @version is 2 then parser.yy.Protocol = astmod.ProtocolV2
+    if @version is 2
+      parser.yy.Protocol = astmod.ProtocolV2
+      parser.yy.Type = astmod.TypeV2
     ast = null
     try
       ast = parser.parse dat

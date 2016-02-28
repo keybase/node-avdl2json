@@ -97,13 +97,20 @@ class Field extends Node
 
 #=======================================================================
 
-class Type extends Node
+class TypeBase extends Node
   constructor : ({start, end, @prim, @custom, @void_type, @null_type }) -> super { start, end }
   to_json : () ->
     if @prim? then @prim
     else if @custom? then @custom.to_json()
-    else if @null_type? then "null"
-    else if @void_type then "null"
+    else if @null_type? then @null_value()
+    else if @void_type then @null_value()
+
+#=======================================================================
+
+class Type extends TypeBase
+  null_value : () -> "null"
+class TypeV2 extends TypeBase
+  null_value : () -> null
 
 #=======================================================================
 
@@ -151,13 +158,14 @@ class Import extends Node
 #=======================================================================
 
 class Message extends Node
-  constructor : ({start, end, decorators, @name, @params, @return_type }) -> super { start, end, decorators }
+  constructor : ({start, end, decorators, @name, @params, @return_type, @one_way }) -> super { start, end, decorators }
   is_message : () -> true
   to_json : (out) ->
     msg = {
       request : (p.to_json() for p in @params)
       response : @return_type.to_json()
     }
+    if @one_way then msg.one_way = true
     out[@name.to_json()] = @decorate msg
     return out
 
@@ -202,5 +210,5 @@ module.exports = {
   Protocol, Decorator, Identifier, Enum, Decorators,
   Record, Field, Type, Value, ArrayType, Union,
   Import, Message, Param, ArrayValue, Fixed, String, Doc,
-  MapType, ProtocolV2
+  MapType, ProtocolV2, TypeV2
 }

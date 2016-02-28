@@ -25,6 +25,7 @@
 <INITIAL>"namespace" return 'NAMESPACE';
 <INITIAL>"null"      return 'NULL';
 <INITIAL>"as"        return 'AS';
+<INITIAL>"oneway"    return 'ONEWAY';
 
 <INITIAL>[a-zA-Z_][a-zA-Z_0-9]* { return 'IDENTIFIER'; }
 <INITIAL>[-]?[0-9]+             { return 'NUMBER'; }

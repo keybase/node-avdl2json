@@ -139,7 +139,12 @@ AsOpt
   ;
 
 Message
-  : Decorators Type Identifier LPAREN ParamsOpt RPAREN SEMICOLON { $$ = new yy.Message({ start: @1, decorators : $1, return_type : $2, name : $3, params : $5 }); }
+  : Decorators Type Identifier LPAREN ParamsOpt RPAREN OneWay SEMICOLON { $$ = new yy.Message({ start: @1, decorators : $1, return_type : $2, name : $3, params : $5, one_way : $7 }); }
+  ;
+
+OneWay
+  : { $$ = false; }
+  | ONEWAY { $$ = true }
   ;
 
 ParamsOpt

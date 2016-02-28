@@ -33,6 +33,16 @@
         }
       ],
       "response": "keybase1.Baz"
+    },
+    "notifier": {
+      "request": [
+        {
+          "name":"i",
+          "type":"int"
+        }
+      ],
+      "response": null,
+      "one_way": true
     }
   }
 }

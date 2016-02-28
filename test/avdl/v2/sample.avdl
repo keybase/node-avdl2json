@@ -6,4 +6,5 @@ protocol sample {
 		keybase1.Bar bar;
 	}
 	keybase1.Baz getBaz(R r, keybase1.Beep beep);
+	void notifier(int i) oneway;
 }
