@@ -10,7 +10,7 @@ class Node
 
 #=======================================================================
 
-class Protocol extends Node
+class ProtocolBase extends Node
   constructor : ({start, end, @name, @statements, @namespace }) -> super { start, end }
   get_imports : () -> (i for i in @statements when i.is_import())
   get_type_decls : () -> (t for t in @statements when t.is_type_decl())
@@ -19,8 +19,9 @@ class Protocol extends Node
   to_json : () ->
     out = { protocol : @name.to_json() }
     out.namespace = @namespace if @namespace
+    @output_imports(out)
     out.types = []
-    for i in @get_all_protocols()
+    for i in @get_protocols_for_output_types()
       for t in i.get_type_decls()
         out.types.push t.to_json()
     out.messages = {}
@@ -36,6 +37,20 @@ class Protocol extends Node
         ret.push p
     ret.push @
     ret
+
+#=======================================================================
+
+class Protocol extends ProtocolBase
+  get_protocols_for_output_types : () -> @get_all_protocols()
+  output_imports : (out) -> out
+
+#=======================================================================
+
+class ProtocolV2 extends ProtocolBase
+  get_protocols_for_output_types : () -> [ @ ]
+  output_imports : (out) ->
+    out.imports = (i.to_json() for i in @get_imports())
+    out
 
 #=======================================================================
 
@@ -58,6 +73,7 @@ class Decorators extends Node
 class Identifier extends Node
   constructor : ({start, end, @name }) -> super { start, end }
   to_json : () -> @name
+  dot : (n2) -> @name = @name + "." + n2.name
 
 #=======================================================================
 
@@ -121,10 +137,16 @@ class Union extends Node
 #=======================================================================
 
 class Import extends Node
-  constructor : ({start, end, @type, @path }) -> super { start, end }
+  constructor : ({start, end, @type, @path, @import_as }) -> super { start, end }
   is_import : () -> true
   set_protocol : (ast) -> @protocol = ast
   get_path : () -> @path
+  to_json : () ->
+    out = {}
+    if @path? then out.path = @path.eval_to_string()
+    if @type? then out.type = @type.to_json()
+    if @import_as? then out.import_as = @import_as.to_json()
+    return out
 
 #=======================================================================
 
@@ -180,5 +202,5 @@ module.exports = {
   Protocol, Decorator, Identifier, Enum, Decorators,
   Record, Field, Type, Value, ArrayType, Union,
   Import, Message, Param, ArrayValue, Fixed, String, Doc,
-  MapType
+  MapType, ProtocolV2
 }

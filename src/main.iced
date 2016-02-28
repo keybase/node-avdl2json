@@ -11,8 +11,8 @@ pathmod = require 'path'
 
 usage = () ->
   console.error """usage:
-    single file: avd2ljson -i <infile> -o <outfile>
-    batch:       avd2ljson -b -o <outdir> <infiles...>
+    single file: avd2ljson [-2] -i <infile> -o <outfile>
+    batch:       avd2ljson [-2] -b -o <outdir> <infiles...>
 """
 
 #================================================
@@ -34,7 +34,7 @@ exports.FileRunner = class FileRunner
 
   #---------------
 
-  constructor : ({@infile, @stack, @dir}) ->
+  constructor : ({@infile, @stack, @dir, @version}) ->
     @stack or= new Stack
 
   #---------------
@@ -55,6 +55,7 @@ exports.FileRunner = class FileRunner
   parse : ({dat}, cb) ->
     parser = new Parser()
     parser.yy = astmod
+    if @version is 2 then parser.yy.Protocol = astmod.ProtocolV2
     ast = null
     try
       ast = parser.parse dat
@@ -82,13 +83,13 @@ exports.FileRunner = class FileRunner
     esc = make_esc cb, "run"
     await @open_infile {}, esc defer dat
     await @parse { dat }, esc defer ast
-    await @recurse { ast }, esc defer()
+    await @recurse { ast }, esc defer() unless (@version is 2)
     cb null, ast
 
 #================================================
 
-exports.parse = parse = ({infile}, cb) ->
-  p = new FileRunner { infile : pathmod.basename(infile), dir : pathmod.dirname(infile) }
+exports.parse = parse = ({infile, version }, cb) ->
+  p = new FileRunner { infile : pathmod.basename(infile), dir : pathmod.dirname(infile), version }
   await p.run {}, defer err, ast
   cb err, ast
 
@@ -106,6 +107,7 @@ exports.Main = class Main
   #---------------
 
   constructor : () ->
+    @version = 1
 
   #---------------
 
@@ -126,6 +128,7 @@ exports.Main = class Main
       @infile = argv.i
       unless @outfile? and @infile?
         err = new Error "need an [-i <infile>] and a [-o <outfile>]"
+    @version = if argv["2"] then 2 else 1
     cb err
 
   #---------------
@@ -147,8 +150,8 @@ exports.Main = class Main
     esc = make_esc cb, "do_batch_mode"
     for f in @infiles
       outfile = @make_outfile f
-      await parse { infile : f }, esc defer ast
-      if ast.has_messages() or @forcefiles[f]
+      await parse { infile : f, @version }, esc defer ast
+      if ast.has_messages() or @forcefiles[f] or (@version is 2)
         await output { ast, outfile }, esc defer()
         console.log "Compiling #{f} -> #{outfile}"
     cb null
@@ -161,7 +164,7 @@ exports.Main = class Main
     if @batch
       await @do_batch_mode {}, esc defer()
     else
-      await parse { @infile }, esc defer ast
+      await parse { @infile, @version }, esc defer ast
       await output {ast, @outfile}, esc defer()
     cb null
 

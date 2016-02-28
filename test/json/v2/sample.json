@@ -1,0 +1,38 @@
+{
+  "protocol": "sample",
+  "namespace": "sample.1",
+  "imports": [
+    {
+      "path": "github.com/keybase/client/go/protocol",
+      "type": "idl",
+      "import_as": "keybase1"
+    }
+  ],
+  "types": [
+    {
+      "type": "record",
+      "name": "R",
+      "fields": [
+        {
+          "type": "keybase1.Bar",
+          "name": "bar"
+        }
+      ]
+    }
+  ],
+  "messages": {
+    "getBaz": {
+      "request": [
+        {
+          "name": "r",
+          "type": "R"
+        },
+        {
+          "name": "beep",
+          "type": "keybase1.Beep"
+        }
+      ],
+      "response": "keybase1.Baz"
+    }
+  }
+}

@@ -1,0 +1,9 @@
+
+@namespace("sample.1")
+protocol sample {
+	import idl "github.com/keybase/client/go/protocol" as keybase1;
+	record R {
+		keybase1.Bar bar;
+	}
+	keybase1.Baz getBaz(R r, keybase1.Beep beep);
+}

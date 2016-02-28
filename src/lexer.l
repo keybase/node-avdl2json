@@ -24,6 +24,7 @@
 <INITIAL>"void"      return 'VOID';
 <INITIAL>"namespace" return 'NAMESPACE';
 <INITIAL>"null"      return 'NULL';
+<INITIAL>"as"        return 'AS';
 
 <INITIAL>[a-zA-Z_][a-zA-Z_0-9]* { return 'IDENTIFIER'; }
 <INITIAL>[-]?[0-9]+             { return 'NUMBER'; }
@@ -38,6 +39,7 @@
 <INITIAL>">"        return 'RANGLE';
 <INITIAL>";"        return "SEMICOLON";
 <INITIAL>","        return "COMMA";
+<INITIAL>"."        return "DOT";
 <INITIAL>'='        return 'EQUALS';
 <INITIAL>'@'        return 'AT_SIGN';
 
