@@ -11,8 +11,8 @@ pathmod = require 'path'
 
 usage = () ->
   console.error """usage:
-    single file: avd2ljson [-2] -i <infile> -o <outfile>
-    batch:       avd2ljson [-2] -b -o <outdir> <infiles...>
+    single file: avdl2json [-2] -i <infile> -o <outfile>
+    batch:       avdl2json [-2] -b -o <outdir> <infiles...>
 """
 
 #================================================
