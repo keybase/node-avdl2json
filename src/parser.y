@@ -77,11 +77,11 @@ Type
   : ArrayType
   | Union
   | MapType
+  | CustomType { $$ = new yy.Type({start: @1, custom: $1      }); }
   | STRING     { $$ = new yy.Type({start: @1, prim: 'string'  }); }
   | INT        { $$ = new yy.Type({start: @1, prim: 'int'     }); }
   | BOOLEAN    { $$ = new yy.Type({start: @1, prim: 'boolean' }); }
   | LONG       { $$ = new yy.Type({start: @1, prim: 'long'    }); }
-  | Identifier { $$ = new yy.Type({start: @1, custom: $1      }); }
   | VOID       { $$ = new yy.Type({start: @1, void_type: true }); }
   ;
 
@@ -111,6 +111,11 @@ ArrayType
   : ARRAY LANGLE Type RANGLE { $$ = new yy.ArrayType({ start: @1, type : $3 }); }
   ;
 
+CustomType
+  : Identifier { $$ = $1; }
+  | CustomType DOT Identifier { $$.dot($3); }
+  ;
+
 MapType
   : MAP LANGLE Type RANGLE { $$ = new yy.MapType({ start: @1, values : $3 }); }
   ;
@@ -125,11 +130,21 @@ TypeOrNullList
   ;
 
 Import
-  : IMPORT Identifier String SEMICOLON { $$ = new yy.Import({ start: @1, type : $2, path : $3 }); }
+  : IMPORT Identifier String AsOpt SEMICOLON { $$ = new yy.Import({ start: @1, type : $2, path : $3, import_as: $4 }); }
+  ;
+
+AsOpt
+  : { $$ = null; }
+  | AS Identifier { $$ = $2; }
   ;
 
 Message
-  : Decorators Type Identifier LPAREN ParamsOpt RPAREN SEMICOLON { $$ = new yy.Message({ start: @1, decorators : $1, return_type : $2, name : $3, params : $5 }); }
+  : Decorators Type Identifier LPAREN ParamsOpt RPAREN OneWay SEMICOLON { $$ = new yy.Message({ start: @1, decorators : $1, return_type : $2, name : $3, params : $5, one_way : $7 }); }
+  ;
+
+OneWay
+  : { $$ = false; }
+  | ONEWAY { $$ = true }
   ;
 
 ParamsOpt

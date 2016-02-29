@@ -1,5 +1,3 @@
-
-
 {parse} = require '../..'
 fs = require 'fs'
 pathmod = require 'path'
