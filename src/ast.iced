@@ -158,14 +158,14 @@ class Import extends Node
 #=======================================================================
 
 class Message extends Node
-  constructor : ({start, end, decorators, @name, @params, @return_type, @one_way }) -> super { start, end, decorators }
+  constructor : ({start, end, decorators, @name, @params, @return_type, @oneway }) -> super { start, end, decorators }
   is_message : () -> true
   to_json : (out) ->
     msg = {
       request : (p.to_json() for p in @params)
       response : @return_type.to_json()
     }
-    if @one_way then msg.one_way = true
+    if @oneway then msg.oneway = true
     out[@name.to_json()] = @decorate msg
     return out
 

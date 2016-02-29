@@ -42,7 +42,7 @@
         }
       ],
       "response": null,
-      "one_way": true
+      "oneway": true
     }
   }
 }
