@@ -11,14 +11,13 @@ class Node
 #=======================================================================
 
 class ProtocolBase extends Node
-  constructor : ({start, end, @name, @statements, @namespace }) -> super { start, end }
+  constructor : ({start, end, @name, @statements, decorators }) -> super { start, end, decorators }
   get_imports : () -> (i for i in @statements when i.is_import())
   get_type_decls : () -> (t for t in @statements when t.is_type_decl())
   get_all_messages : () -> (m for m in @statements when m.is_message())
   has_messages : () -> @get_all_messages().length > 0
   to_json : () ->
     out = { protocol : @name.to_json() }
-    out.namespace = @namespace if @namespace
     @output_imports(out)
     out.types = []
     for i in @get_protocols_for_output_types()
@@ -27,7 +26,7 @@ class ProtocolBase extends Node
     out.messages = {}
     for m in @get_all_messages()
       m.to_json out.messages
-    out
+    @decorate out
   get_all_protocols : (seen) ->
     ret = [ ]
     seen or= {}

@@ -9,16 +9,7 @@ Root
   ;
 
 Protocol
-  : NamespaceOpt PROTOCOL Identifier LBRACE Statements RBRACE { $$ = new yy.Protocol({ start : @1, namespace : $1, name : $3, statements : $5, }); }
-  ;
-
-Namespace
-  : AT_SIGN NAMESPACE LPAREN String RPAREN { $$ = $4.eval_to_string() }
-  ;
-
-NamespaceOpt
-  : { $$ = null }
-  | Namespace
+  : Decorators PROTOCOL Identifier LBRACE Statements RBRACE { $$ = new yy.Protocol({ start : @1, decorators : $1, name : $3, statements : $5, }); }
   ;
 
 Decorators

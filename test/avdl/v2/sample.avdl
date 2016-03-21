@@ -1,4 +1,5 @@
 
+@go_field_suffix("_")
 @namespace("sample.1")
 protocol sample {
 	import idl "github.com/keybase/client/go/protocol" as keybase1;
