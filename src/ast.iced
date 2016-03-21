@@ -92,8 +92,8 @@ class Record extends Node
 #=======================================================================
 
 class Field extends Node
-  constructor : ({start, end, @type, @name}) -> super { start, end }
-  to_json : () -> { type : @type.to_json(), name : @name.to_json() }
+  constructor : ({start, end, @type, @name, decorators}) -> super { start, end, decorators }
+  to_json : () -> @decorate { type : @type.to_json(), name : @name.to_json() }
 
 #=======================================================================
 

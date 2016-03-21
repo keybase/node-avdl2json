@@ -4,6 +4,8 @@ protocol sample {
 	import idl "github.com/keybase/client/go/protocol" as keybase1;
 	record R {
 		keybase1.Bar bar;
+		@private() int foo;
+		@private(true) int baz;
 	}
 	keybase1.Baz getBaz(R r, keybase1.Beep beep);
 	void notifier(int i) oneway;

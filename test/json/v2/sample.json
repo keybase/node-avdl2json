@@ -16,6 +16,16 @@
         {
           "type": "keybase1.Bar",
           "name": "bar"
+        },
+        {
+          "type" : "int",
+          "name" : "foo",
+          "private" : true
+        },
+        {
+          "type" : "int",
+          "name" : "baz",
+          "private" : true
         }
       ]
     }
