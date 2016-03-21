@@ -167,7 +167,7 @@ ParamDefault
   ;
 
 ExprOrNull
-  : { $$ = new yy.Value({bool : true }) }
+  : { $$ = new yy.Value({ null_value : true }) }
   | Expr { $$ = $1; }
   ;
 
