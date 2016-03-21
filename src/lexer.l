@@ -22,7 +22,6 @@
 <INITIAL>"true"      return 'TRUE';
 <INITIAL>"false"     return 'FALSE';
 <INITIAL>"void"      return 'VOID';
-<INITIAL>"namespace" return 'NAMESPACE';
 <INITIAL>"null"      return 'NULL';
 <INITIAL>"as"        return 'AS';
 <INITIAL>"oneway"    return 'ONEWAY';

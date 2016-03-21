@@ -1,6 +1,7 @@
 {
   "protocol": "sample",
   "namespace": "sample.1",
+  "go_field_suffix" : "_",
   "imports": [
     {
       "path": "github.com/keybase/client/go/protocol",
