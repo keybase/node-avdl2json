@@ -31,7 +31,7 @@ DecoratorList
   ;
 
 Decorator
-  : AT_SIGN Identifier LPAREN Expr RPAREN { $$ = new yy.Decorator({ start: @2, label : $2, args : $4 }); }
+  : AT_SIGN Identifier LPAREN ExprOrNull RPAREN { $$ = new yy.Decorator({ start: @2, label : $2, args : $4 }); }
   ;
 
 Statements
@@ -70,7 +70,7 @@ Fields
   ;
 
 Field
-  : Type Identifier SEMICOLON { $$ = new yy.Field({ start: @1, type : $1, name : $2 }); }
+  : Decorators Type Identifier SEMICOLON { $$ = new yy.Field({ start: @2, type : $2, name : $3, decorators : $1 }); }
   ;
 
 Type
@@ -164,6 +164,11 @@ Param
 ParamDefault
   : { $$ = null; }
   | EQUALS Value { $$ = $2; }
+  ;
+
+ExprOrNull
+  : { $$ = new yy.Value({ null_value : true }) }
+  | Expr { $$ = $1; }
   ;
 
 Expr
