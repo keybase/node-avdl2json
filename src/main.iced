@@ -11,8 +11,8 @@ pathmod = require 'path'
 
 usage = () ->
   console.error """usage:
-    single file: avdl2json [-2] -i <infile> -o <outfile>
-    batch:       avdl2json [-2] -b -o <outdir> <infiles...>
+    single file: avdl2json [-2] [-r < rewriter>] -i <infile> -o <outfile>
+    batch:       avdl2json [-2] [-r <rewriter>] -b -o <outdir> <infiles...>
 """
 
 #================================================
@@ -34,7 +34,8 @@ exports.FileRunner = class FileRunner
 
   #---------------
 
-  constructor : ({@infile, @stack, @dir, @version}) ->
+  constructor : ({@infile, @stack, @dir, @version, @rewriter}) ->
+    @rewriter or= (x) -> x
     @stack or= new Stack
 
   #---------------
@@ -71,9 +72,10 @@ exports.FileRunner = class FileRunner
     esc = make_esc cb, "recurse"
     err = null
     for i in ast.get_imports()
-      if @stack.lookup (nm = i.get_path().eval_to_string())
+      if @stack.lookup (nm = @rewriter(i.get_path_string({@version})))
         err = new Error "import cycle found with '#{nm}'"
         break
+      console.log nm
       p = new FileRunner { infile : nm, stack : @stack.push(nm), @dir}
       await p.run {}, esc defer ast
       i.set_protocol ast
@@ -90,8 +92,10 @@ exports.FileRunner = class FileRunner
 
 #================================================
 
-exports.parse = parse = ({infile, version }, cb) ->
-  p = new FileRunner { infile : pathmod.basename(infile), dir : pathmod.dirname(infile), version }
+exports.parse = parse = ({infile, version, rewriter }, cb) ->
+  console.log "rewriter"
+  console.log rewriter.toString()
+  p = new FileRunner { infile : pathmod.basename(infile), dir : pathmod.dirname(infile), version, rewriter }
   await p.run {}, defer err, ast
   cb err, ast
 
@@ -131,6 +135,7 @@ exports.Main = class Main
       unless @outfile? and @infile?
         err = new Error "need an [-i <infile>] and a [-o <outfile>]"
     @version = if argv["2"] then 2 else 1
+    @rewriter = eval "(#{argv.r})" if argv.r?
     cb err
 
   #---------------
@@ -152,7 +157,7 @@ exports.Main = class Main
     esc = make_esc cb, "do_batch_mode"
     for f in @infiles
       outfile = @make_outfile f
-      await parse { infile : f, @version }, esc defer ast
+      await parse { infile : f, @version, @rewriter }, esc defer ast
       if ast.has_messages() or @forcefiles[f] or (@version is 2)
         await output { ast, outfile }, esc defer()
         console.log "Compiling #{f} -> #{outfile}"
@@ -166,7 +171,7 @@ exports.Main = class Main
     if @batch
       await @do_batch_mode {}, esc defer()
     else
-      await parse { @infile, @version }, esc defer ast
+      await parse { @infile, @version, @rewriter }, esc defer ast
       await output {ast, @outfile}, esc defer()
     cb null
 

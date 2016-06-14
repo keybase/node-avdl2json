@@ -1,4 +1,5 @@
 
+pathmod  = require 'path'
 #=======================================================================
 
 class Node
@@ -147,7 +148,10 @@ class Import extends Node
   constructor : ({start, end, @type, @path, @import_as }) -> super { start, end }
   is_import : () -> true
   set_protocol : (ast) -> @protocol = ast
-  get_path : () -> @path
+  get_path_string : ({version}) ->
+    path_string = @path.eval_to_string()
+    if @type.to_json() is "idl_index" and version is 1 then pathmod.join path_string, "index.avdl"
+    else path_string
   to_json : () ->
     out = {}
     if @path? then out.path = @path.eval_to_string()
