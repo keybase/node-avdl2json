@@ -122,7 +122,7 @@ exports.Main = class Main
       @outdir = argv.o
       @infiles = argv._
       @forcefiles = {}
-      (@forcefiles[f] = true for f in argv.f)
+      (@forcefiles[f] = true for f in argv.f) if argv.f?
       unless @outdir? and @infiles.length
         err = new Error "need an [-o <outdir>] and input files in batch mode"
     else

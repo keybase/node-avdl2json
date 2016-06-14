@@ -1,3 +1,7 @@
+# 2.2.1
+
+- Bugfix: don't crap out if no force files were specified
+
 # 2.2.0 (2016-03-21)
 
 - Allow other decorators for protocols aside from `@namespace`
