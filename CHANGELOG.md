@@ -1,4 +1,4 @@
-# 2.2.1
+# 2.2.1 (2016-06-18)
 
 - Bugfix: don't crap out if no force files were specified
 
