@@ -40,6 +40,7 @@ Statement
   | Message
   | Import
   | Fixed
+  | Variant
   ;
 
 Enum
@@ -64,7 +65,7 @@ Field
   : Decorators Type Identifier SEMICOLON { $$ = new yy.Field({ start: @2, type : $2, name : $3, decorators : $1 }); }
   ;
 
-Type
+TypeNotVoid
   : ArrayType
   | Union
   | MapType
@@ -73,6 +74,10 @@ Type
   | INT        { $$ = new yy.Type({start: @1, prim: 'int'     }); }
   | BOOLEAN    { $$ = new yy.Type({start: @1, prim: 'boolean' }); }
   | LONG       { $$ = new yy.Type({start: @1, prim: 'long'    }); }
+  ;
+
+Type
+  : TypeNotVoid
   | VOID       { $$ = new yy.Type({start: @1, void_type: true }); }
   ;
 
@@ -82,8 +87,12 @@ TypeOrNull
   ;
 
 Value
-  : String     { $$ = new yy.Value({start: @1, string: $1       }); }
-  | NUMBER     { $$ = new yy.Value({start: @1, int: yytext      }); }
+  : String        { $$ = new yy.Value({start: @1, string: $1 }); }
+  | NumBoolOrNull { $$ = $1 }
+  ;
+
+NumBoolOrNull
+  : NUMBER     { $$ = new yy.Value({start: @1, int: parseInt(yytext,10) }); }
   | TRUE       { $$ = new yy.Value({start: @1, bool: true       }); }
   | FALSE      { $$ = new yy.Value({start: @1, bool: false      }); }
   | NULL       { $$ = new yy.Value({start: @1, null_value: true }); }
@@ -114,6 +123,40 @@ MapType
 Union
   : UNION LBRACE TypeOrNullList RBRACE { $$ = new yy.Union({ start: @1, types : $3 }); }
   ;
+
+Variant
+  : Decorators VARIANT Identifier Switch LBRACE Cases RBRACE { $$ = new yy.Variant({ start: @1, decorators : $1, name : $3, switch : $4, cases: $6 }); }
+  ;
+
+Cases
+  : Case { $$ = [ $1 ]}
+  | Cases Case { $$ = $1.concat($2) }
+  ;
+
+CaseName
+  : NumBoolOrNull { $$ = $1; }
+  | Identifier    { $$ = $1; }
+  ;
+
+CaseBody
+  : TypeNotVoid Identifier SEMICOLON { $$ = new yy.CaseBody({ start: @1, type: $1, name: $2 }) }
+  | VOID SEMICOLON { $$ = new yy.VoidCaseBody({start: @1}); }
+  ;
+
+CaseLabel
+  : CASE CaseName COLON  { $$ = new yy.CaseLabel({ start: @1, name: $2, def: false }); }
+  | DEFAULT COLON        { $$ = new yy.CaseLabel({ start: @1, def: true }) ; }
+  ;
+
+Case
+  : CaseLabel CaseBody   { $$ = new yy.Case({ start: @1, label: $1, body: $2 }); }
+  ;
+
+Switch
+  : SWITCH LPAREN Type Identifier RPAREN { $$ = new yy.Switch({start: @1, type: $3, name : $4 })}
+  ;
+
+
 
 TypeOrNullList
   : TypeOrNull { $$ = [ $1 ]; }

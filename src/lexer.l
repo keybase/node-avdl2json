@@ -8,6 +8,9 @@
 
 <INITIAL>"record"    return 'RECORD';
 <INITIAL>"union"     return 'UNION';
+<INITIAL>"variant"   return 'VARIANT';
+<INITIAL>"switch"    return 'SWITCH';
+<INITIAL>"case"      return 'CASE';
 <INITIAL>"map"       return 'MAP';
 <INITIAL>"enum"      return 'ENUM';
 <INITIAL>"array"     return 'ARRAY';
@@ -25,6 +28,7 @@
 <INITIAL>"null"      return 'NULL';
 <INITIAL>"as"        return 'AS';
 <INITIAL>"oneway"    return 'ONEWAY';
+<INITIAL>"default"   return 'DEFAULT';
 
 <INITIAL>[a-zA-Z_][a-zA-Z_0-9]* { return 'IDENTIFIER'; }
 <INITIAL>[-]?[0-9]+             { return 'NUMBER'; }
@@ -38,6 +42,7 @@
 <INITIAL>"<"        return 'LANGLE';
 <INITIAL>">"        return 'RANGLE';
 <INITIAL>";"        return "SEMICOLON";
+<INITIAL>":"        return "COLON";
 <INITIAL>","        return "COMMA";
 <INITIAL>"."        return "DOT";
 <INITIAL>'='        return 'EQUALS';
