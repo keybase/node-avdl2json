@@ -1,3 +1,7 @@
+# 2.2.3 (2016-08-31)
+
+- Bugfix - handle `false` cases in variants properly
+
 # 2.2.2 (2016-08-31)
 
 - Feature: support for `variant` types

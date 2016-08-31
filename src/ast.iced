@@ -164,7 +164,7 @@ class Case extends Node
 
 class CaseLabel extends Node
   constructor : ({start, end, @name, @def }) -> super { start, end }
-  to_json : () -> { name : (@name?.to_json() or null), def : @def }
+  to_json : () -> { name : @name?.to_json(), def : @def }
 
 #=======================================================================
 
