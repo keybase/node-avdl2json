@@ -143,6 +143,43 @@ class Union extends Node
 
 #=======================================================================
 
+class Variant extends Node
+  constructor : ({start, end, @name, @switch, @cases, decorators }) -> super { start, end, decorators }
+  is_type_decl : () -> true
+  to_json : () -> @decorate { type : "variant", name : @name.to_json(), switch : @switch.to_json(), cases: (c.to_json() for c in @cases) }
+
+#=======================================================================
+
+class Switch extends Node
+  constructor : ({start, end, @type, @name }) -> super { start, end }
+  to_json : () -> { type : @type.to_json(), name : @name.to_json() }
+
+#=======================================================================
+
+class Case extends Node
+  constructor : ({start, end, @label, @body }) -> super { start, end }
+  to_json : () -> { label : @label.to_json(), body : @body.to_json() }
+
+#=======================================================================
+
+class CaseLabel extends Node
+  constructor : ({start, end, @name, @def }) -> super { start, end }
+  to_json : () -> { name : (@name?.to_json() or null), def : @def }
+
+#=======================================================================
+
+class CaseBody extends Node
+  constructor : ({start, end, @type, @name }) -> super { start, end }
+  to_json : () -> { type : @type.to_json(), name: @name.to_json() }
+
+#=======================================================================
+
+class VoidCaseBody extends Node
+  constructor : ({start, end}) -> super { start, end }
+  to_json : () -> { "void" : "true" }
+
+#=======================================================================
+
 class Import extends Node
   constructor : ({start, end, @type, @path, @import_as }) -> super { start, end }
   is_import : () -> true
@@ -210,5 +247,6 @@ module.exports = {
   Protocol, Decorator, Identifier, Enum, Decorators,
   Record, Field, Type, Value, ArrayType, Union,
   Import, Message, Param, ArrayValue, Fixed, String, Doc,
-  MapType, ProtocolV2, TypeV2
+  MapType, ProtocolV2, TypeV2,
+  Variant, Switch, Case, CaseLabel, CaseBody, VoidCaseBody
 }
