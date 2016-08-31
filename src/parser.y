@@ -65,7 +65,7 @@ Field
   : Decorators Type Identifier SEMICOLON { $$ = new yy.Field({ start: @2, type : $2, name : $3, decorators : $1 }); }
   ;
 
-TypeNotVoid
+Type
   : ArrayType
   | Union
   | MapType
@@ -74,10 +74,6 @@ TypeNotVoid
   | INT        { $$ = new yy.Type({start: @1, prim: 'int'     }); }
   | BOOLEAN    { $$ = new yy.Type({start: @1, prim: 'boolean' }); }
   | LONG       { $$ = new yy.Type({start: @1, prim: 'long'    }); }
-  ;
-
-Type
-  : TypeNotVoid
   | VOID       { $$ = new yy.Type({start: @1, void_type: true }); }
   ;
 
@@ -139,8 +135,7 @@ CaseName
   ;
 
 CaseBody
-  : TypeNotVoid Identifier SEMICOLON { $$ = new yy.CaseBody({ start: @1, type: $1, name: $2 }) }
-  | VOID SEMICOLON { $$ = new yy.VoidCaseBody({start: @1}); }
+  : Type SEMICOLON { $$ = $1; }
   ;
 
 CaseLabel
@@ -155,8 +150,6 @@ Case
 Switch
   : SWITCH LPAREN Type Identifier RPAREN { $$ = new yy.Switch({start: @1, type: $3, name : $4 })}
   ;
-
-
 
 TypeOrNullList
   : TypeOrNull { $$ = [ $1 ]; }
