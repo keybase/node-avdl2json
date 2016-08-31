@@ -174,12 +174,6 @@ class CaseBody extends Node
 
 #=======================================================================
 
-class VoidCaseBody extends Node
-  constructor : ({start, end}) -> super { start, end }
-  to_json : () -> { "void" : "true" }
-
-#=======================================================================
-
 class Import extends Node
   constructor : ({start, end, @type, @path, @import_as }) -> super { start, end }
   is_import : () -> true
@@ -248,5 +242,5 @@ module.exports = {
   Record, Field, Type, Value, ArrayType, Union,
   Import, Message, Param, ArrayValue, Fixed, String, Doc,
   MapType, ProtocolV2, TypeV2,
-  Variant, Switch, Case, CaseLabel, CaseBody, VoidCaseBody
+  Variant, Switch, Case, CaseLabel, CaseBody
 }
