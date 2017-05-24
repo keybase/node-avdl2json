@@ -1,7 +1,5 @@
 {
   "protocol": "sample",
-  "namespace": "sample.1",
-  "go_field_suffix" : "_",
   "imports": [
     {
       "path": "github.com/keybase/client/go/protocol",
@@ -12,6 +10,20 @@
   "types": [
     {
       "type": "record",
+      "name": "K",
+      "fields": [
+        {
+          "type": "string",
+          "name": "s"
+        },
+        {
+          "type": "int",
+          "name": "i"
+        }
+      ]
+    },
+    {
+      "type": "record",
       "name": "R",
       "fields": [
         {
@@ -19,14 +31,29 @@
           "name": "bar"
         },
         {
-          "type" : "int",
-          "name" : "foo",
-          "private" : null
+          "type": "int",
+          "name": "foo",
+          "private": null
         },
         {
-          "type" : "int",
-          "name" : "baz",
-          "private" : true
+          "type": "int",
+          "name": "baz",
+          "private": true
+        },
+        {
+          "type": {
+            "type": "map",
+            "values": "int"
+          },
+          "name": "boopie"
+        },
+        {
+          "type": {
+            "type": "map",
+            "values": "string",
+            "keys": "K"
+          },
+          "name": "bippie"
         }
       ]
     }
@@ -48,12 +75,14 @@
     "notifier": {
       "request": [
         {
-          "name":"i",
-          "type":"int"
+          "name": "i",
+          "type": "int"
         }
       ],
       "response": null,
       "oneway": true
     }
-  }
+  },
+  "go_field_suffix": "_",
+  "namespace": "sample.1"
 }

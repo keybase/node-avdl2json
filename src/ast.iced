@@ -131,8 +131,14 @@ class ArrayType extends Node
 #=======================================================================
 
 class MapType extends Node
-  constructor : ({start, end, @values }) -> super { start, end }
-  to_json : () -> { type : "map", values : @values.to_json() }
+  constructor : ({start, end, params }) ->
+    super { start, end }
+    @keys = if params.length > 1 then params.shift() else null
+    @values = params[0]
+  to_json : () ->
+    ret = { type : "map", values : @values.to_json() }
+    if @keys? then ret.keys = @keys.to_json()
+    ret
 
 #=======================================================================
 

@@ -112,8 +112,13 @@ CustomType
   | CustomType DOT Identifier { $$.dot($3); }
   ;
 
+TypeList
+  : Type                { $$ = [ $1 ] }
+  | TypeList COMMA Type { $$ = $1.concat($3) }
+  ;
+
 MapType
-  : MAP LANGLE Type RANGLE { $$ = new yy.MapType({ start: @1, values : $3 }); }
+  : MAP LANGLE TypeList RANGLE { $$ = new yy.MapType({ start: @1, params : $3 }); }
   ;
 
 Union

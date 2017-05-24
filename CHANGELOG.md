@@ -1,3 +1,7 @@
+# 2.2.4 (2017-05-24)
+
+- Use map<K,V> possibilities
+
 # 2.2.3 (2016-08-31)
 
 - Bugfix - handle `false` cases in variants properly
