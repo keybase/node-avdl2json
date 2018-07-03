@@ -66,6 +66,7 @@ exports.test_keybase_files = (T,cb) ->
     "update_ui"
     "user"
     "variants"
+    "choices"
   ]
   for f in files
     await test_file T, f, T.esc(defer(), cb)

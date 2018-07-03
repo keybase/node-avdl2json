@@ -11,6 +11,7 @@
 <INITIAL>"variant"   return 'VARIANT';
 <INITIAL>"switch"    return 'SWITCH';
 <INITIAL>"case"      return 'CASE';
+<INITIAL>"choice"    return 'CHOICE';
 <INITIAL>"map"       return 'MAP';
 <INITIAL>"enum"      return 'ENUM';
 <INITIAL>"array"     return 'ARRAY';

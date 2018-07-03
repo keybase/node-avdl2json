@@ -41,6 +41,7 @@ Statement
   | Import
   | Fixed
   | Variant
+  | Choice
   ;
 
 Enum
@@ -125,12 +126,17 @@ Union
   : UNION LBRACE TypeOrNullList RBRACE { $$ = new yy.Union({ start: @1, types : $3 }); }
   ;
 
+TypeOrNullList
+  : TypeOrNull { $$ = [ $1 ]; }
+  | TypeOrNullList COMMA TypeOrNull { $$ = $1.concat($3); }
+  ;
+
 Variant
   : Decorators VARIANT Identifier Switch LBRACE Cases RBRACE { $$ = new yy.Variant({ start: @1, decorators : $1, name : $3, switch : $4, cases: $6 }); }
   ;
 
 Cases
-  : Case { $$ = [ $1 ]}
+  : Case { $$ = [ $1 ] }
   | Cases Case { $$ = $1.concat($2) }
   ;
 
@@ -156,9 +162,17 @@ Switch
   : SWITCH LPAREN Type Identifier RPAREN { $$ = new yy.Switch({start: @1, type: $3, name : $4 })}
   ;
 
-TypeOrNullList
-  : TypeOrNull { $$ = [ $1 ]; }
-  | TypeOrNullList COMMA TypeOrNull { $$ = $1.concat($3); }
+Choice
+  : Decorators CHOICE Identifier LBRACE ChoiceCases RBRACE { $$ = new yy.Choice({ start: @1, decorators : $1, name : $3, choices : $5 }) }
+  ;
+
+ChoiceCases
+  : ChoiceCase { $$ = [ $1 ] }
+  | ChoiceCases ChoiceCase { $$ = $1.concat($2) }
+  ;
+
+ChoiceCase
+  : Identifier LBRACE Fields RBRACE { $$ = new yy.ChoiceCase({ start: @1, label: $1, fields: $3 }); }
   ;
 
 Import

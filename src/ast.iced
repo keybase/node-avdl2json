@@ -180,6 +180,19 @@ class CaseBody extends Node
 
 #=======================================================================
 
+class Choice extends Node
+  constructor : ({start, end, @name, @choices, decorators }) -> super { start, end, decorators }
+  is_type_decl : () -> true
+  to_json : () -> @decorate { type : "choice", name : @name.to_json(), choices: (c.to_json() for c in @choices) }
+
+#=======================================================================
+
+class ChoiceCase extends Node
+  constructor : ({start, end, @label, @fields }) -> super { start, end }
+  to_json : () -> { label : @label.to_json(), fields: (f.to_json() for f in @fields) }
+
+#=======================================================================
+
 class Import extends Node
   constructor : ({start, end, @type, @path, @import_as }) -> super { start, end }
   is_import : () -> true
@@ -244,9 +257,10 @@ class Doc extends Node
 #=======================================================================
 
 module.exports = {
-  Protocol, Decorator, Identifier, Enum, Decorators,
-  Record, Field, Type, Value, ArrayType, Union,
-  Import, Message, Param, ArrayValue, Fixed, String, Doc,
-  MapType, ProtocolV2, TypeV2,
+  Protocol, Decorator, Identifier, Enum, Decorators
+  Record, Field, Type, Value, ArrayType, Union
+  Import, Message, Param, ArrayValue, Fixed, String, Doc
+  MapType, ProtocolV2, TypeV2
   Variant, Switch, Case, CaseLabel, CaseBody
+  Choice, ChoiceCase
 }

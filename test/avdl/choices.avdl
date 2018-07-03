@@ -1,0 +1,25 @@
+@namespace("keybase.1")
+
+protocol choices {
+  import idl "backend_common.avdl";
+
+  choice TransactionSummary {
+    Stellar{
+      string txID;
+      uint64 operationID;
+    }
+    Direct{
+      string from;
+      TimeMs rtime;
+    }
+    Relay{
+      string toAssertion;
+      AccountID relayAccount;
+    }
+  }
+
+  choice AssetOrCurrency {
+    Asset{Asset asset;}
+    Currency{OutsideCurrencyCode currency;}
+  }
+}
