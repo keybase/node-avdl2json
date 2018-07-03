@@ -1,0 +1,33 @@
+@namespace("keybase.1")
+
+protocol variants {
+  import idl "backend_common.avdl";
+
+  enum PaymentSummaryType {
+    NONE_0,
+    STELLAR_1,
+    DIRECT_2,
+    RELAY_3
+  }
+
+  variant PaymentSummary switch (PaymentSummaryType typ) {
+    case STELLAR: PaymentSummaryStellar;
+    case DIRECT: PaymentSummaryDirect;
+    case RELAY: PaymentSummaryRelay;
+  }
+
+  record PaymentSummaryStellar {
+    string txID;
+    uint64 operationID;
+  }
+
+  record PaymentSummaryDirect {
+    string from;
+    TimeMs rtime;
+  }
+
+  record PaymentSummaryRelay {
+    string toAssertion;
+    AccountID relayAccount;
+  }
+}
