@@ -1,0 +1,416 @@
+{
+  "namespace": "keybase.1",
+  "protocol": "variants",
+  "messages": {},
+  "types": [
+    {
+      "type": "record",
+      "name": "Time",
+      "fields": [],
+      "typedef": "long"
+    },
+    {
+      "type": "record",
+      "name": "StringKVPair",
+      "fields": [
+        {
+          "type": "string",
+          "name": "key"
+        },
+        {
+          "type": "string",
+          "name": "value"
+        }
+      ]
+    },
+    {
+      "type": "record",
+      "name": "Status",
+      "fields": [
+        {
+          "type": "int",
+          "name": "code"
+        },
+        {
+          "type": "string",
+          "name": "name"
+        },
+        {
+          "type": "string",
+          "name": "desc"
+        },
+        {
+          "type": {
+            "type": "array",
+            "items": "StringKVPair"
+          },
+          "name": "fields"
+        }
+      ]
+    },
+    {
+      "type": "record",
+      "name": "UID",
+      "fields": [],
+      "typedef": "string"
+    },
+    {
+      "type": "record",
+      "name": "DeviceID",
+      "fields": [],
+      "typedef": "string"
+    },
+    {
+      "type": "record",
+      "name": "SigID",
+      "fields": [],
+      "typedef": "string"
+    },
+    {
+      "type": "record",
+      "name": "KID",
+      "fields": [],
+      "typedef": "string"
+    },
+    {
+      "type": "record",
+      "name": "Text",
+      "fields": [
+        {
+          "type": "string",
+          "name": "data"
+        },
+        {
+          "type": "boolean",
+          "name": "markup"
+        }
+      ]
+    },
+    {
+      "type": "record",
+      "name": "PGPIdentity",
+      "fields": [
+        {
+          "type": "string",
+          "name": "username"
+        },
+        {
+          "type": "string",
+          "name": "comment"
+        },
+        {
+          "type": "string",
+          "name": "email"
+        }
+      ]
+    },
+    {
+      "type": "record",
+      "name": "PublicKey",
+      "fields": [
+        {
+          "type": "KID",
+          "name": "KID"
+        },
+        {
+          "type": "string",
+          "name": "PGPFingerprint"
+        },
+        {
+          "type": {
+            "type": "array",
+            "items": "PGPIdentity"
+          },
+          "name": "PGPIdentities"
+        },
+        {
+          "type": "boolean",
+          "name": "isSibkey"
+        },
+        {
+          "type": "boolean",
+          "name": "isEldest"
+        },
+        {
+          "type": "string",
+          "name": "parentID"
+        },
+        {
+          "type": "DeviceID",
+          "name": "deviceID"
+        },
+        {
+          "type": "string",
+          "name": "deviceDescription"
+        },
+        {
+          "type": "string",
+          "name": "deviceType"
+        },
+        {
+          "type": "Time",
+          "name": "cTime"
+        },
+        {
+          "type": "Time",
+          "name": "eTime"
+        }
+      ]
+    },
+    {
+      "type": "record",
+      "name": "User",
+      "fields": [
+        {
+          "type": "UID",
+          "name": "uid"
+        },
+        {
+          "type": "string",
+          "name": "username"
+        }
+      ]
+    },
+    {
+      "type": "record",
+      "name": "Device",
+      "fields": [
+        {
+          "type": "string",
+          "name": "type"
+        },
+        {
+          "type": "string",
+          "name": "name"
+        },
+        {
+          "type": "DeviceID",
+          "name": "deviceID"
+        },
+        {
+          "type": "Time",
+          "name": "cTime"
+        },
+        {
+          "type": "Time",
+          "name": "mTime"
+        },
+        {
+          "type": "KID",
+          "name": "encryptKey"
+        },
+        {
+          "type": "KID",
+          "name": "verifyKey"
+        },
+        {
+          "type": "int",
+          "name": "status"
+        }
+      ]
+    },
+    {
+      "type": "record",
+      "name": "Stream",
+      "fields": [
+        {
+          "type": "int",
+          "name": "fd"
+        }
+      ]
+    },
+    {
+      "type": "enum",
+      "name": "LogLevel",
+      "symbols": [
+        "NONE_0",
+        "DEBUG_1",
+        "INFO_2",
+        "NOTICE_3",
+        "WARN_4",
+        "ERROR_5",
+        "CRITICAL_6",
+        "FATAL_7"
+      ]
+    },
+    {
+      "type": "enum",
+      "name": "ClientType",
+      "symbols": [
+        "NONE_0",
+        "CLI_1",
+        "GUI_2",
+        "KBFS_3"
+      ]
+    },
+    {
+      "type": "record",
+      "name": "UserVersionVector",
+      "fields": [
+        {
+          "type": "long",
+          "name": "id"
+        },
+        {
+          "type": "int",
+          "name": "sigHints"
+        },
+        {
+          "type": "long",
+          "name": "sigChain"
+        },
+        {
+          "type": "Time",
+          "name": "cachedAt"
+        },
+        {
+          "type": "Time",
+          "name": "lastIdentifiedAt"
+        }
+      ]
+    },
+    {
+      "type": "record",
+      "name": "UserPlusKeys",
+      "fields": [
+        {
+          "type": "UID",
+          "name": "uid"
+        },
+        {
+          "type": "string",
+          "name": "username"
+        },
+        {
+          "type": {
+            "type": "array",
+            "items": "PublicKey"
+          },
+          "name": "deviceKeys"
+        },
+        {
+          "type": {
+            "type": "array",
+            "items": "PublicKey"
+          },
+          "name": "keys"
+        },
+        {
+          "type": "UserVersionVector",
+          "name": "uvv"
+        }
+      ]
+    },
+    {
+      "type": "record",
+      "name": "BlockIdCombo",
+      "fields": [
+        {
+          "type": "string",
+          "name": "blockHash"
+        },
+        {
+          "type": "UID",
+          "name": "chargedTo"
+        }
+      ]
+    },
+    {
+      "type": "record",
+      "name": "ChallengeInfo",
+      "fields": [
+        {
+          "type": "long",
+          "name": "now"
+        },
+        {
+          "type": "string",
+          "name": "challenge"
+        }
+      ]
+    },
+    {
+      "type": "enum",
+      "name": "PaymentSummaryType",
+      "symbols": [
+        "NONE_0",
+        "STELLAR_1",
+        "DIRECT_2",
+        "RELAY_3"
+      ]
+    },
+    {
+      "type": "variant",
+      "name": "PaymentSummary",
+      "switch": {
+        "type": "PaymentSummaryType",
+        "name": "typ"
+      },
+      "cases": [
+        {
+          "label": {
+            "name": "STELLAR",
+            "def": false
+          },
+          "body": "PaymentSummaryStellar"
+        },
+        {
+          "label": {
+            "name": "DIRECT",
+            "def": false
+          },
+          "body": "PaymentSummaryDirect"
+        },
+        {
+          "label": {
+            "name": "RELAY",
+            "def": false
+          },
+          "body": "PaymentSummaryRelay"
+        }
+      ]
+    },
+    {
+      "type": "record",
+      "name": "PaymentSummaryStellar",
+      "fields": [
+        {
+          "type": "string",
+          "name": "txID"
+        },
+        {
+          "type": "uint64",
+          "name": "operationID"
+        }
+      ]
+    },
+    {
+      "type": "record",
+      "name": "PaymentSummaryDirect",
+      "fields": [
+        {
+          "type": "string",
+          "name": "from"
+        },
+        {
+          "type": "TimeMs",
+          "name": "rtime"
+        }
+      ]
+    },
+    {
+      "type": "record",
+      "name": "PaymentSummaryRelay",
+      "fields": [
+        {
+          "type": "string",
+          "name": "toAssertion"
+        },
+        {
+          "type": "AccountID",
+          "name": "relayAccount"
+        }
+      ]
+    }
+  ]
+}
