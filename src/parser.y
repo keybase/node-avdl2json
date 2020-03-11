@@ -34,6 +34,11 @@ Identifier
   : IDENTIFIER { $$ = new yy.Identifier({start: @1, name : $1 }); }
   ;
 
+IdentifierOrProtocol
+  : IDENTIFIER { $$ = new yy.Identifier({start: @1, name : $1 }); }
+  | PROTOCOL { $$ = new yy.Identifier({start: @1, name : "protocol" }); }
+  ;
+
 Statement
   : Enum
   | Record
@@ -62,7 +67,7 @@ Fields
   ;
 
 Field
-  : Decorators Type Identifier SEMICOLON { $$ = new yy.Field({ start: @2, type : $2, name : $3, decorators : $1 }); }
+  : Decorators Type IdentifierOrProtocol SEMICOLON { $$ = new yy.Field({ start: @2, type : $2, name : $3, decorators : $1 }); }
   ;
 
 Type

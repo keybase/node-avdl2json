@@ -26,6 +26,7 @@ protocol identifyUi {
     int rowId;
     bytes pkhash;
     string address;
+    string protocol;
   }
 
   record Identity {
