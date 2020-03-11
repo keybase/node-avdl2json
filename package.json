@@ -1,6 +1,6 @@
 {
   "name": "avdl2json",
-  "version": "2.2.4",
+  "version": "2.2.5",
   "description": "An AVDL-to-JSON compiler",
   "main": "lib/main.js",
   "scripts": {
